@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <div class="header-left">
+            <ul>
+                <li><a href="/"><span class="glyphicon glyphicon-home"></span><span class="left-con">主页</span></a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-envelope"></span><span class="left-con">消息</span></a></li>
+            </ul>
+        </div>
+        <div class="header-logo">
+            <img src="/images/cloud.png">
+        </div>
+        <div class="header-right">
+            <div class="right-search">
+                <form class="form-inline">
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" id="search" name="search" placeholder="搜索 云图">
+                        <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="right-user">
+                <div class="dropdown">
+                    <a class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">L</a>
+                    <ul class="dropdown-menu" aria-labelledby="dLabel">
+                        <li><a href="/user">查看个人资料</a> </li>
+                        <li><a href="/logout">退出</a> </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="right-new">
+                <a href="#" class="btn btn-green"><span class="glyphicon glyphicon-send"></span> 发布</a>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>

@@ -1,0 +1,292 @@
+<%- include header.ejs %>
+<div class="page">
+    <div class="page-wrap"></div>
+    <div class="page-container">
+        <div class="page-left">
+            <div class="left-container">
+                <div class="user-info">
+                    <div class="info-top"></div>
+                    <div class="user-head">
+                        <a href="/user"><img src="/images/user.jpg"></a>
+                    </div>
+                    <div class="info-bottom">
+                        <span class="user-name">Lzy</span>
+                        <div class="user-msg">
+                            <ul>
+                                <li><a href="#">发布</a><span>10</span> </li>
+                                <li><a href="#">关注</a><span>10</span> </li>
+                                <li><a href="#">收藏</a><span>10</span> </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-main">
+            <div class="main-search">
+                <div class="search-head">
+                    <img src="/images/user.jpg">
+                </div>
+                <form>
+                    <div class="input-group">
+                        <input type="text" class="form-control search-input" id="exampleInputAmount" placeholder="想在云图搜索什么?">
+                        <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-picture"></span> </div>
+                    </div>
+                </form>
+            </div>
+            <div class="page-msg">
+                <div class="msg">
+                    <div class="msg-head">
+                        <img src="/images/rec2.jpg">
+                    </div>
+                    <a href="#" class="msg-hide">
+                        <span class="glyphicon glyphicon-eye-close"></span>
+                        <span class="msg-hidet">不感兴趣</span>
+                    </a>
+                    <div class="msg-main">
+                        <a href="#" class="msg-user">test1</a>
+                        <span> · </span>
+                        <span class="msg-time">2014-6-21</span>
+                        <div class="msg-con" data-toggle="modal" data-target="#imgModal">
+                            <p class="msg-info">If you're a Node contrib and you're going to Interactive in EU in Sept, don't forget there is a two day collab summit after the main conf.</p>
+                            <div class="msg-img">
+                                <img src="/images/rec3.jpg">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rec-module">
+                        <div class="module-comment">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="module-hide">评论</span>
+                            </a>
+                        </div>
+                        <div class="module-forward">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-share-alt"></span>
+                                <span class="module-hide">转发</span>
+                            </a>
+                        </div>
+                        <div class="module-like">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-heart"></span>
+                                <span class="module-hide">喜欢</span>
+                            </a>
+                        </div>
+                        <div class="module-collect">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-floppy-disk"></span>
+                                <span class="module-hide">收藏</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="msg">
+                    <div class="msg-head">
+                        <img src="/images/rec3.jpg">
+                    </div>
+                    <a href="#" class="msg-hide">
+                        <span class="glyphicon glyphicon-eye-close"></span>
+                        <span class="msg-hidet">不感兴趣</span>
+                    </a>
+                    <div class="msg-main">
+                        <a href="#" class="msg-user">test2</a>
+                        <span> · </span>
+                        <span class="msg-time">2014-6-20</span>
+                        <div class="msg-con" data-toggle="modal" data-target="#imgModal">
+                            <p class="msg-info">If you're a Node contrib and you're going to Interactive in EU in Sept, don't forget there is a two day collab summit after the main conf.</p>
+                            <div class="msg-img">
+                                <img src="/images/rec1.jpg">
+                            </div>
+                        </div>
+                        <div class="rec-module">
+                            <div class="module-comment">
+                                <a href="#" class="module-control">
+                                    <span class="glyphicon glyphicon-comment"></span>
+                                    <span class="module-hide">评论</span>
+                                </a>
+                            </div>
+                            <div class="module-forward">
+                                <a href="#" class="module-control">
+                                    <span class="glyphicon glyphicon-share-alt"></span>
+                                    <span class="module-hide">转发</span>
+                                </a>
+                            </div>
+                            <div class="module-like">
+                                <a href="#" class="module-control">
+                                    <span class="glyphicon glyphicon-heart"></span>
+                                    <span class="module-hide">喜欢</span>
+                                </a>
+                            </div>
+                            <div class="module-collect">
+                                <a href="#" class="module-control">
+                                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                                    <span class="module-hide">收藏</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <div class="msg">
+                    <div class="msg-head">
+                        <img src="/images/rec1.jpg">
+                    </div>
+                    <a href="#" class="msg-hide">
+                        <span class="glyphicon glyphicon-eye-close"></span>
+                        <span class="msg-hidet">不感兴趣</span>
+                    </a>
+                    <div class="msg-main">
+                        <a href="#" class="msg-user">test3</a>
+                        <span> · </span>
+                        <span class="msg-time">2014-6-22</span>
+                        <div class="msg-con" data-toggle="modal" data-target="#imgModal">
+                            <p class="msg-info">If you're a Node contrib and you're going to Interactive in EU in Sept, don't forget there is a two day collab summit after the main conf.</p>
+                            <div class="msg-img">
+                                <img src="/images/rec2.jpg">
+                            </div>
+                        </div>
+                        <div class="rec-module">
+                            <div class="module-comment">
+                                <a href="#" class="module-control">
+                                    <span class="glyphicon glyphicon-comment"></span>
+                                    <span class="module-hide">评论</span>
+                                </a>
+                            </div>
+                            <div class="module-forward">
+                                <a href="#" class="module-control">
+                                    <span class="glyphicon glyphicon-share-alt"></span>
+                                    <span class="module-hide">转发</span>
+                                </a>
+                            </div>
+                            <div class="module-like">
+                                <a href="#" class="module-control">
+                                    <span class="glyphicon glyphicon-heart"></span>
+                                    <span class="module-hide">喜欢</span>
+                                </a>
+                            </div>
+                            <div class="module-collect">
+                                <a href="#" class="module-control">
+                                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                                    <span class="module-hide">收藏</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-right">
+            <div class="right-container">
+                <div class="right-title">
+                    <span>推荐关注</span> · <a href="#">查看全部</a>
+                </div>
+                <div class="right-rec">
+                    <div class="rec">
+                        <img src="/images/rec1.jpg">
+                        <a href="#" class="rec-name">test1</a>
+                        <a href="#" class="btn btn-default btn-rec"><span class="glyphicon glyphicon-plus"></span> 关注</a>
+                        <a href="#" class="glyphicon glyphicon-remove"></a>
+                    </div>
+                    <div class="rec">
+                        <img src="/images/rec2.jpg">
+                        <a href="#" class="rec-name">test1</a>
+                        <a href="#" class="btn btn-default btn-rec"><span class="glyphicon glyphicon-plus"></span> 关注</a>
+                        <a href="#" class="glyphicon glyphicon-remove"></a>
+                    </div>
+                    <div class="rec">
+                        <img src="/images/rec3.jpg">
+                        <a href="#" class="rec-name">test1</a>
+                        <a href="#" class="btn btn-default btn-rec"><span class="glyphicon glyphicon-plus"></span> 关注</a>
+                        <a href="#" class="glyphicon glyphicon-remove"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="right-container">
+                <div class="right-title">
+                    <span>热门</span> · <a href="#">查看更多</a>
+                </div>
+                <div class="right-popular">
+                    <ul>
+                        <li><a href="#">#popularTest1</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest2</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest3</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest4</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest5</a> <span>1.1w关注</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--图片展示-->
+<div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <div class="modal-userhead">
+                    <img>
+                </div>
+                <div class="modal-usermsginfo">
+                    <a href="#" class="msg-user"></a>
+                    <span> · </span>
+                    <span class="msg-time"></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-container">
+                    <p class="msg-info"></p>
+                    <div class="msg-img" data-toggle="modal" data-target="#imgModal">
+                        <img>
+                    </div>
+                    <div class="rec-module">
+                        <div class="module-comment">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="module-hide">评论</span>
+                            </a>
+                        </div>
+                        <div class="module-forward">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-share-alt"></span>
+                                <span class="module-hide">转发</span>
+                            </a>
+                        </div>
+                        <div class="module-like">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-heart"></span>
+                                <span class="module-hide">喜欢</span>
+                            </a>
+                        </div>
+                        <div class="module-collect">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-floppy-disk"></span>
+                                <span class="module-hide">收藏</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="main-search">
+                    <div class="search-head">
+                        <img src="/images/user.jpg">
+                    </div>
+                    <form>
+                        <div class="input-group">
+                            <input type="text" class="form-control search-input" id="exampleInputAmount" placeholder="回复">
+                            <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-bullhorn"></span> </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include footer.ejs %>
