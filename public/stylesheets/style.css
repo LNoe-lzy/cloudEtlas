@@ -59,6 +59,13 @@ ul li {
   padding: 0;
   overflow: hidden;
 }
+.alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+}
 
 /*header*/
 .header {

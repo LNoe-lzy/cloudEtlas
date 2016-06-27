@@ -6,11 +6,28 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
+
+<!--渲染success信息-->
+<% if (success) { %>
+<div class="alert alert-success" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <%= success %>
+</div>
+<% } %>
+<!--渲染error信息-->
+<% if (error) { %>
+<div class="alert alert-danger" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <%= error %>
+</div>
+<% } %>
+
 <div class="header">
     <div class="container">
         <div class="header-left">
             <ul>
                 <li><a href=""><span class="glyphicon glyphicon-home"></span><span class="left-con">主页</span></a></li>
+                <li><a href="/login"><span class="glyphicon glyphicon-grain"></span><span class="left-con">登录</span> </a> </li>
             </ul>
         </div>
         <div class="header-logo">
@@ -32,25 +49,14 @@
             <div class="pageform-right">
                 <div class="pageform-container">
                     <div class="right-title">
-                        <span>我是老用户</span> · <a>登录</a>
-                    </div>
-                    <form>
-                        <input type="text" placeholder="用户名" required class="form-control cloud-input" name="name">
-                        <input type="password" placeholder="密码" required class="form-control cloud-input" name="password">
-                        <button type="submit" class="btn btn-green form-btn">登录</button>
-                        <div class="clear"></div>
-                    </form>
-                </div>
-                <div class="pageform-container">
-                    <div class="right-title">
                         <span>我是新用户</span> · <a>注册</a>
                     </div>
-                    <form>
+                    <form method="post">
                         <input type="text" placeholder="用户名" required class="form-control cloud-input" name="name">
                         <input type="email" placeholder="邮箱" required class="form-control cloud-input" name="email">
                         <input type="password" placeholder="密码" required class="form-control cloud-input" name="password">
                         <input type="password" placeholder="再次输入密码" required class="form-control cloud-input" name="passwordrep">
-                        <button type="submit" class="btn btn-green form-btn">注册</button>
+                        <button type="submit" class="btn btn-green form-btn" id="signup">注册</button>
                         <div class="clear"></div>
                     </form>
                 </div>

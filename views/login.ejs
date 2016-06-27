@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+
+<!--渲染success信息-->
+<% if (success) { %>
+<div class="alert alert-success" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <%= success %>
+</div>
+<% } %>
+<!--渲染error信息-->
+<% if (error) { %>
+<div class="alert alert-danger" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <%= error %>
+</div>
+<% } %>
+
+<div class="header">
+    <div class="container">
+        <div class="header-left">
+            <ul>
+                <li><a href=""><span class="glyphicon glyphicon-home"></span><span class="left-con">主页</span></a></li>
+                <li><a href="/signup"><span class="glyphicon glyphicon-tree-conifer"></span><span class="left-con">注册</span> </a> </li>
+            </ul>
+        </div>
+        <div class="header-logo">
+            <img src="/images/cloud.png">
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div class="page">
+    <div class="page-wrap"></div>
+    <div class="page-container">
+        <div class="page-form">
+            <div class="pageform-left">
+                <div class="page-container">
+                    <h1>欢迎使用 云图。</h1>
+                    <p>联系你的好友和更多精彩。获取你感兴趣的实时更新。并通过每个视角观看事件实时呈现。</p>
+                </div>
+            </div>
+            <div class="pageform-right">
+                <div class="pageform-container">
+                    <div class="right-title">
+                        <span>我是老用户</span> · <a>登录</a>
+                    </div>
+                    <form method="post">
+                        <input type="text" placeholder="用户名" required class="form-control cloud-input" name="name">
+                        <input type="password" placeholder="密码" required class="form-control cloud-input" name="password">
+                        <button type="submit" class="btn btn-green form-btn">登录</button>
+                        <div class="clear"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include footer.ejs %>

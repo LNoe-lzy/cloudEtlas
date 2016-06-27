@@ -4,6 +4,13 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+//连接数据库, 启用session
+var mongoose = require('mongoose');
+var session = require('express-session');
+var mongoStore = require('connect-mongo')(session);
+var flash = require('connect-flash');
+
+mongoose.connect('mongodb://localhost/cloud');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -18,9 +25,17 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//use session
+app.use(session({
+  secret: 'cloudEtals',
+  store: new mongoStore({
+    mongooseConnection: mongoose.connection
+  })
+}));
+app.use(flash());
 
 app.use('/', routes);
 app.use('/users', users);
