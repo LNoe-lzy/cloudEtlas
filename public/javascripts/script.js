@@ -24,4 +24,35 @@ $(document).ready(function () {
             });
         });
     });
+    //发表ajax
+    $(function () {
+        $('#fileBtn').click(function () {
+            var info = $('#info').val();
+            $.ajax({
+                type: 'post',
+                dataType: 'json',
+                url: '/send',
+                data: {
+                    info: info
+                }
+            });
+        });
+    });
+    //删除ajax
+    $(function () {
+        $('.delete').each(function () {
+            var that = $(this);
+            that.click(function () {
+                var imgPath = that.parent().find('.msg-img img').attr('src');
+                $.ajax({
+                    type: 'get',
+                    dataType: 'json',
+                    url: '/delete',
+                    data: {
+                        imgPath: imgPath
+                    }
+                });
+            });
+        });
+    })
 });

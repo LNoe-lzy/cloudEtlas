@@ -1,26 +1,51 @@
 var express = require('express');
 var router = express.Router();
 var crypto = require('crypto');
+var formidable = require('formidable');
+var fs = require('fs');
+var multer = require('multer');
+var upload = multer({dest: 'public/images/tmp/'});
+
+var imgUpload = require('../models/upload');
 
 //引入模型
 var User = require('../models/user');
+var Image = require('../models/image');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', {
-    title: '云图',
-    user: req.session.user,
-    error: req.flash('error').toString(),
-    success: req.flash('success').toString()
+  Image.find({
+    user: req.session.user.name
+  }).sort({
+    '_id': -1
+  }).exec(function (err, img) {
+    if (err) {
+      console.log(err);
+    }
+    res.render('index', {
+      title: '云图',
+      user: req.session.user,
+      imgs: img,
+      error: req.flash('error').toString(),
+      success: req.flash('success').toString()
+    });
   });
 });
 //get user page
 router.get('/user', function(req, res) {
-  res.render('user', {
-    title: '云图',
-    user: req.session.user,
-    error: req.flash('error').toString(),
-    success: req.flash('success').toString()
+  Image.find({
+    user: req.session.user.name
+  }, function (err, img) {
+    if (err) {
+      console.log(err);
+    }
+    res.render('user', {
+      title: '云图',
+      user: req.session.user,
+      imgs: img,
+      error: req.flash('error').toString(),
+      success: req.flash('success').toString()
+    });
   });
 });
 
@@ -124,6 +149,29 @@ router.get('/logout', function (req, res) {
   req.session.user = null;
   req.flash('success', '退出成功!');
   res.redirect('/login');
+});
+
+//发布动态
+router.post('/send', upload.single('image'), function (req, res){
+  var info = req.body.info;
+  var username = req.session.user.name;
+  var tmp_path = req.file.path;
+  var file_name = req.file.filename;
+  var mimeType = req.file.mimetype;
+  imgUpload.imgUpload(tmp_path, file_name, mimeType, username, info, req, res);
+});
+
+//删除发表的动态
+router.get('/delete', function (req, res) {
+  Image.remove({
+    path: req.query.imgPath
+  }, function (err) {
+    if (err) {
+      console.log(err);
+    }
+    req.flash('success', '删除成功!');
+    res.redirect('/user');
+  });
 });
 
 module.exports = router;

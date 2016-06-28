@@ -15,8 +15,10 @@
     "ejs": "~2.4.1",
     "express": "~4.13.4",
     "express-session": "^1.13.0",
+    "formidable": "^1.0.17",
     "mongoose": "^4.5.2",
     "morgan": "~1.7.0",
+    "multer": "^1.1.0",
     "serve-favicon": "~2.3.0"
   }
 }

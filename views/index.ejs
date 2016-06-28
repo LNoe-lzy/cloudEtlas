@@ -35,6 +35,57 @@
                 </form>
             </div>
             <div class="page-msg">
+                <!--渲染数据库数据-->
+                <% imgs.forEach(function (img, index) {%>
+                <div class="msg">
+                    <div class="msg-head">
+                        <img src="/images/rec2.jpg">
+                    </div>
+                    <a href="#" class="msg-hide">
+                        <span class="glyphicon glyphicon-eye-close"></span>
+                        <span class="msg-hidet">不感兴趣</span>
+                    </a>
+                    <div class="msg-main">
+                        <a href="#" class="msg-user"><%= img.user %></a>
+                        <span> · </span>
+                        <span class="msg-time"><%= img.time %></span>
+                        <div class="msg-con" data-toggle="modal" data-target="#imgModal">
+                            <p class="msg-info"><%= img.info %></p>
+                            <div class="msg-img">
+                                <img src="<%= img.path %>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rec-module">
+                        <div class="module-comment">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="module-hide">评论</span>
+                            </a>
+                        </div>
+                        <div class="module-forward">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-share-alt"></span>
+                                <span class="module-hide">转发</span>
+                            </a>
+                        </div>
+                        <div class="module-like">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-heart"></span>
+                                <span class="module-hide">喜欢</span>
+                            </a>
+                        </div>
+                        <div class="module-collect">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-floppy-disk"></span>
+                                <span class="module-hide">收藏</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <% }) %>
+
                 <div class="msg">
                     <div class="msg-head">
                         <img src="/images/rec2.jpg">

@@ -140,6 +140,28 @@
                 </form>
             </div>
             <div class="page-msg">
+                <!--渲染数据库-->
+                <% imgs.forEach(function (img, index) {%>
+                <div class="msg">
+                    <div class="msg-head">
+                        <img src="/images/user.jpg">
+                    </div>
+                    <a href="/delete" class="msg-hide delete">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        <span class="msg-hidet">删除</span>
+                    </a>
+                    <div class="msg-main">
+                        <a href="#" class="msg-user"><%= img.user %></a>
+                        <span> · </span>
+                        <span class="msg-time"><%= img.time %></span>
+                        <p class="msg-info"><%= img.info %></p>
+                        <div class="msg-img">
+                            <img src="<%= img.path %>">
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+
                 <div class="msg">
                     <div class="msg-head">
                         <img src="/images/user.jpg">

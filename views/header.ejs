@@ -52,9 +52,41 @@
                 </div>
             </div>
             <div class="right-new">
-                <a href="#" class="btn btn-green"><span class="glyphicon glyphicon-send"></span> 发布</a>
+                <a href="#" class="btn btn-green" data-toggle="modal" data-target="#pushMsg"><span class="glyphicon glyphicon-send"></span> 发布</a>
             </div>
         </div>
         <div class="clear"></div>
+    </div>
+</div>
+
+<!--发布信息-->
+<div class="modal fade" id="pushMsg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data" action="/send">
+                    <div class="input-group text-group">
+                        <textarea class="form-control" rows="5" placeholder="在云图,写下自己想说的!" name="info" id="info"></textarea>
+                    </div>
+                    <div class="form-left">
+                        <div class="form-image">
+                            <input type="file" class="form-input" name="image">
+                            <span class="glyphicon glyphicon-picture form-icon"></span>
+                        </div>
+                        <div class="form-video">
+                            <input type="file" class="form-input">
+                            <span class="glyphicon glyphicon-facetime-video form-icon"></span>
+                        </div>
+                    </div>
+                    <div class="form-right">
+                        <button type="submit" class="btn btn-green" id="fileBtn">
+                            <span class="glyphicon glyphicon-send"></span>
+                            发布
+                        </button>
+                    </div>
+                    <div class="clear"></div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
