@@ -54,5 +54,27 @@ $(document).ready(function () {
                 });
             });
         });
+    });
+    //显示评论区
+    //隐藏评论区
+    $(function () {
+        $('.module-comment').each(function () {
+            var that = $(this);
+            that.click(function () {
+                that.parent().parent().parent().find('.comment-text').fadeIn();
+            });
+        });
+        $('.comment-close').each(function () {
+            var that = $(this);
+            that.click(function () {
+                that.parent().fadeOut();
+            });
+        });
+    });
+    //用户头像上传
+    $(function () {
+        $('#edit-userhead').change(function () {
+            $('#edit-hide-btn').fadeIn();
+        });
     })
 });

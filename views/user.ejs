@@ -3,7 +3,7 @@
     <div class="page-top">
         <div class="top-top"></div>
         <div class="top-head">
-            <img src="/images/user.jpg">
+            <img src="<%= user.path %>">
         </div>
         <div class="top-bottom">
             <div class="bottom-info">
@@ -12,7 +12,7 @@
                     <li><a href="#">关注者</a><span>100</span> </li>
                 </ul>
             </div>
-            <a href="#" class="btn btn-default btn-edit">编辑个人资料</a>
+            <a href="#" class="btn btn-default btn-edit" data-toggle="modal" data-target="#userModal">编辑个人资料</a>
             <div class="clear"></div>
         </div>
     </div>
@@ -22,9 +22,9 @@
                 <a href="#" class="data-name"><%= user.name %></a>
                 <div class="data-info">
                     <ul>
-                        <li><span class="glyphicon glyphicon-map-marker"></span> Beijing</li>
-                        <li><span class="glyphicon glyphicon-calendar"></span> 1996-3-24</li>
-                        <li><span class="glyphicon glyphicon-cloud"></span> m15222505516@163.com</li>
+                        <li><span class="glyphicon glyphicon-map-marker"></span> <%= user.address %></li>
+                        <li><span class="glyphicon glyphicon-calendar"></span> <%= user.brithday%></li>
+                        <li><span class="glyphicon glyphicon-cloud"></span> <%= user.email %></li>
                     </ul>
                 </div>
             </div>
@@ -115,7 +115,7 @@
         </div>
 
         <div class="page-main">
-            <div class="main-search">
+            <div class="main-text">
                 <form>
                     <div class="input-group text-group">
                         <textarea class="form-control" rows="2" placeholder="在云图,写下自己想说的!"></textarea>
@@ -144,7 +144,7 @@
                 <% imgs.forEach(function (img, index) {%>
                 <div class="msg">
                     <div class="msg-head">
-                        <img src="/images/user.jpg">
+                        <img src="<%= user.path %>">
                     </div>
                     <a href="/delete" class="msg-hide delete">
                         <span class="glyphicon glyphicon-trash"></span>

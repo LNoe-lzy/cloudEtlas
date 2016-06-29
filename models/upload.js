@@ -1,10 +1,11 @@
 //文件上传模块
 var fs = require('fs');
 var Image = require('./image');
+var User = require('./user');
 
-exports.imgUpload = function (tmp, file_name, mime, user, info, req, res) {
+exports.imgUpload = function (tmp, file_name, mime, user, info, type, req, res) {
    //指定存储位置
-    var target_path = 'public/images/upload/' + file_name;
+    var target_path = 'public/images/'+ type +'/' + file_name;
     var extName = '';
     switch (mime) {
         case 'image/pjpeg':
@@ -28,7 +29,7 @@ exports.imgUpload = function (tmp, file_name, mime, user, info, req, res) {
     //文件移动的目录
     var store_path = target_path + '.' + extName;
     //文件相对路径用于存储于数据库
-    var imgpath = '/images/upload/' + file_name + '.' + extName;
+    var imgpath = '/images/'+ type +'/' + file_name + '.' + extName;
     //移动文件
     fs.rename(tmp, store_path, function (err) {
         if (err) {
@@ -53,18 +54,34 @@ exports.imgUpload = function (tmp, file_name, mime, user, info, req, res) {
     };
 
     //将图像信息存储到数据库
-    var newImage = new Image({
-        user: user,
-        time: time.day,
-        info: info,
-        path: imgpath
-    });
-    console.log(newImage);
-    newImage.save(function (err) {
-        if (err) {
-            console.log(err);
-        }
-        req.flash('success', '发表成功!');
-        res.redirect('/');
-    });
+    if (type === 'upload') {
+        var newImage = new Image({
+            user: user,
+            time: time.day,
+            info: info,
+            path: imgpath
+        });
+        console.log(newImage);
+        newImage.save(function (err) {
+            if (err) {
+                console.log(err);
+            }
+            req.flash('success', '发表成功!');
+            res.redirect('/');
+        });
+    } else if (type === 'user') {
+        User.update({
+            name: user
+        }, {
+            $set: {
+                path: imgpath
+            }
+        }, function (err) {
+            if (err) {
+                console.log(err);
+            }
+            req.flash('success', '头像上传成功!');
+            res.redirect('/user');
+        });
+    }
 };

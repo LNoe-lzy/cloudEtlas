@@ -6,7 +6,10 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
     name: String,
     email: String,
-    password: String
+    password: String,
+    address: String,
+    brithday: String,
+    path: String
 });
 
 var User = mongoose.model('users', UserSchema);

@@ -1,3 +1,118 @@
+<!--用户信息编辑-->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <div class="edit-image">
+                    <form method="post" enctype="multipart/form-data" action="/edithead">
+                        <input type="file" class="form-input" id="edit-userhead" name="userhead">
+                        <img src="<%= user.path %>" class="form-icon">
+                        <span class="edit-hide">编辑用户头像</span>
+                        <button class="btn btn-green" id="edit-hide-btn">确定</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/editinfo">
+                    <div class="input-group edit-input-group">
+                        <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-user"></span> </div>
+                        <input type="text" class="form-control search-input" id="exampleInputAmount" placeholder="请在此处编辑用户名" name="name">
+                    </div>
+                    <div class="input-group edit-input-group">
+                        <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-map-marker"></span> </div>
+                        <input type="text" class="form-control search-input" id="exampleInputAmount" placeholder="请在此处编辑居住地" name="address">
+                    </div>
+                    <div class="input-group edit-input-group">
+                        <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-calendar"></span> </div>
+                        <input type="text" class="form-control search-input" id="exampleInputAmount" placeholder="请在此处编辑生日" name="brithday">
+                    </div>
+                    <div class="input-group edit-input-group">
+                        <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-cloud"></span> </div>
+                        <input type="email" class="form-control search-input" id="exampleInputAmount" placeholder="请在此处编辑邮箱" name="email">
+                    </div>
+                    <div class="form-left"></div>
+                    <div class="form-right">
+                        <button type="submit" class="btn btn-green" id="fileBtn">
+                            <span class="glyphicon glyphicon-edit"></span>
+                            修改
+                        </button>
+                    </div>
+                    <div class="clear"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--图片展示-->
+<div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <div class="modal-userhead">
+                    <img>
+                </div>
+                <div class="modal-usermsginfo">
+                    <a href="#" class="msg-user"></a>
+                    <span> · </span>
+                    <span class="msg-time"></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-container">
+                    <p class="msg-info"></p>
+                    <div class="msg-img" data-toggle="modal" data-target="#imgModal">
+                        <img>
+                    </div>
+                    <div class="rec-module">
+                        <div class="module-comment">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="module-hide">评论</span>
+                            </a>
+                        </div>
+                        <div class="module-forward">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-share-alt"></span>
+                                <span class="module-hide">转发</span>
+                            </a>
+                        </div>
+                        <div class="module-like">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-heart"></span>
+                                <span class="module-hide">喜欢</span>
+                            </a>
+                        </div>
+                        <div class="module-collect">
+                            <a href="#" class="module-control">
+                                <span class="glyphicon glyphicon-floppy-disk"></span>
+                                <span class="module-hide">收藏</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="main-text">
+                    <div class="search-head">
+                        <img src="/images/user.jpg">
+                    </div>
+                    <form>
+                        <div class="input-group">
+                            <input type="text" class="form-control search-input" id="exampleInputAmount" placeholder="回复">
+                            <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-bullhorn"></span> </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="/javascripts/jquery.min.js"></script>
 <script src="/javascripts/bootstrap.min.js"></script>
 <script src="/javascripts/script.js"></script>

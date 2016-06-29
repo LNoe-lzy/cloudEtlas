@@ -8,54 +8,101 @@ var upload = multer({dest: 'public/images/tmp/'});
 
 var imgUpload = require('../models/upload');
 
-//引入模型
+/*
+   引入模型
+   User {name, email, password}
+   Image {user, time, info, path}
+ */
 var User = require('../models/user');
 var Image = require('../models/image');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  Image.find({
-    user: req.session.user.name
-  }).sort({
-    '_id': -1
-  }).exec(function (err, img) {
+  User.findOne({
+    name: req.session.user.name
+  }, function (err, user) {
     if (err) {
       console.log(err);
     }
-    res.render('index', {
-      title: '云图',
-      user: req.session.user,
-      imgs: img,
-      error: req.flash('error').toString(),
-      success: req.flash('success').toString()
+    //返回用户动态数,并以发布的时间倒叙返回输出
+    Image.find({
+      user: req.session.user.name
+    }).sort({
+      '_id': -1
+    }).exec(function (err, img) {
+      if (err) {
+        console.log(err);
+      }
+
+      //返回用户发布的动态数
+      Image.find({
+        user: req.session.user.name
+      }).count().exec(function (err, count) {
+        if (err) {
+          console.log('err');
+        }
+        res.render('index', {
+          title: '云图',
+          user: user,
+          imgs: img,
+          count: count,
+          error: req.flash('error').toString(),
+          success: req.flash('success').toString()
+        });
+      });
     });
   });
 });
+
 //get user page
 router.get('/user', function(req, res) {
-  Image.find({
-    user: req.session.user.name
-  }, function (err, img) {
+  User.findOne({
+    name: req.session.user.name
+  }, function (err, user) {
     if (err) {
       console.log(err);
     }
-    res.render('user', {
-      title: '云图',
-      user: req.session.user,
-      imgs: img,
-      error: req.flash('error').toString(),
-      success: req.flash('success').toString()
+    Image.find({
+      user: req.session.user.name
+    }, function (err, img) {
+      if (err) {
+        console.log(err);
+      }
+      console.log(user);
+      res.render('user', {
+        title: '云图',
+        user: user,
+        imgs: img,
+        error: req.flash('error').toString(),
+        success: req.flash('success').toString()
+      });
     });
   });
 });
 
 //get follow page
 router.get('/follow', function (req, res){
-  res.render('follow', {
-    title: '云图',
-    user: req.session.user,
-    error: req.flash('error').toString(),
-    success: req.flash('success').toString()
+  User.findOne({
+    name: req.session.user.name
+  }, function (err, user) {
+    if (err) {
+      console.log(err);
+    }
+    Image.find({
+      user: req.session.user.name
+    }, function (err, img) {
+      if (err) {
+        console.log(err);
+      }
+      console.log(user);
+      res.render('follow', {
+        title: '云图',
+        user: user,
+        imgs: img,
+        error: req.flash('error').toString(),
+        success: req.flash('success').toString()
+      });
+    });
   });
 });
 
@@ -158,7 +205,7 @@ router.post('/send', upload.single('image'), function (req, res){
   var tmp_path = req.file.path;
   var file_name = req.file.filename;
   var mimeType = req.file.mimetype;
-  imgUpload.imgUpload(tmp_path, file_name, mimeType, username, info, req, res);
+  imgUpload.imgUpload(tmp_path, file_name, mimeType, username, info, 'upload', req, res);
 });
 
 //删除发表的动态
@@ -172,6 +219,43 @@ router.get('/delete', function (req, res) {
     req.flash('success', '删除成功!');
     res.redirect('/user');
   });
+});
+
+//编辑用户信息
+router.post('/editinfo', function (req, res) {
+  var currentUser = req.session.user.name;
+  var editData = {
+    name: req.body.name,
+    email: req.body.email,
+    address: req.body.address,
+    brithday: req.body.brithday
+  };
+  User.update({
+    name: currentUser
+  }, {
+    $set: {
+      name: editData.name,
+      email: editData.email,
+      address: editData.address,
+      brithday: editData.brithday
+    }
+  }, function (err) {
+    if (err) {
+      console.log(err);
+    }
+    req.session.user = null;
+    req.flash('success', '修改信息成功!');
+    res.redirect('/logout');
+  });
+});
+
+//上传用户头像
+router.post('/edithead', upload.single('userhead'), function (req, res) {
+  var username = req.session.user.name;
+  var tmp_path = req.file.path;
+  var file_name = req.file.filename;
+  var mimeType = req.file.mimetype;
+  imgUpload.imgUpload(tmp_path, file_name, mimeType, username, null, 'user', req, res);
 });
 
 module.exports = router;
