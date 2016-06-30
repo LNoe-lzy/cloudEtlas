@@ -33,7 +33,6 @@ router.get('/', function(req, res) {
       if (err) {
         console.log(err);
       }
-
       //返回用户发布的动态数
       Image.find({
         user: req.session.user.name
@@ -55,15 +54,15 @@ router.get('/', function(req, res) {
 });
 
 //get user page
-router.get('/user', function(req, res) {
+router.get('/u/:id', function(req, res) {
   User.findOne({
-    name: req.session.user.name
+    _id: req.params.id
   }, function (err, user) {
     if (err) {
       console.log(err);
     }
     Image.find({
-      user: req.session.user.name
+      user: user.name
     }, function (err, img) {
       if (err) {
         console.log(err);
@@ -72,6 +71,7 @@ router.get('/user', function(req, res) {
       res.render('user', {
         title: '云图',
         user: user,
+        currentUser: req.session.user,
         imgs: img,
         error: req.flash('error').toString(),
         success: req.flash('success').toString()
@@ -88,20 +88,28 @@ router.get('/follow', function (req, res){
     if (err) {
       console.log(err);
     }
-    Image.find({
-      user: req.session.user.name
-    }, function (err, img) {
-      if (err) {
-        console.log(err);
-      }
-      console.log(user);
-      res.render('follow', {
-        title: '云图',
-        user: user,
-        imgs: img,
-        error: req.flash('error').toString(),
-        success: req.flash('success').toString()
-      });
+    res.render('follow', {
+      title: '云图',
+      user: user,
+      error: req.flash('error').toString(),
+      success: req.flash('success').toString()
+    });
+  });
+});
+
+//被关注
+router.get('/followed', function (req, res){
+  User.findOne({
+    name: req.session.user.name
+  }, function (err, user) {
+    if (err) {
+      console.log(err);
+    }
+    res.render('followed', {
+      title: '云图',
+      user: user,
+      error: req.flash('error').toString(),
+      success: req.flash('success').toString()
     });
   });
 });
@@ -217,7 +225,7 @@ router.get('/delete', function (req, res) {
       console.log(err);
     }
     req.flash('success', '删除成功!');
-    res.redirect('/user');
+    res.redirect('/');
   });
 });
 
@@ -256,6 +264,125 @@ router.post('/edithead', upload.single('userhead'), function (req, res) {
   var file_name = req.file.filename;
   var mimeType = req.file.mimetype;
   imgUpload.imgUpload(tmp_path, file_name, mimeType, username, null, 'user', req, res);
+});
+
+//用户搜索
+router.get('/search', function (req, res) {
+  User.findOne({
+    name: req.session.user.name
+  }, function (err, user) {
+    if (err) {
+      console.log(err);
+    }
+    var keyword = req.query.search;
+    var pattern = new RegExp("^.*" + keyword + ".*$", "i");
+    User.find({
+      name: pattern
+    }, function (err, u) {
+      if (err) {
+        console.log(err);
+      }
+      res.render('search', {
+        title: '搜索结果',
+        searchs: u,
+        user: user,
+        error: req.flash('error').toString(),
+        success: req.flash('success').toString()
+      });
+    });
+  });
+});
+//用户关注
+router.get('/attention/:to', function (req, res) {
+  var attentionTo = req.params.to;
+  var currentUser = req.session.user;
+  User.findOne({
+    _id: attentionTo
+  }, function (err, u) {
+    if (err) {
+      console.log(err);
+    }
+    //被关注数增加
+    User.update({
+      _id: u._id
+    }, {
+      $push: {
+        "attentioned": {
+          "_id": currentUser._id,
+          "name": currentUser.name,
+          "path": currentUser.path
+        }
+      }
+    }, function (err) {
+      if (err) {
+        console.log(err);
+      }
+      //关注数增加
+      User.update({
+        _id: currentUser._id
+      }, {
+        $push: {
+          "attention": {
+            "_id": u._id,
+            "name": u.name,
+            "path": u.path
+          }
+        }
+      }, function (err) {
+        if (err) {
+          console.log(err);
+        }
+        req.flash('success', '关注成功!');
+        res.redirect('/');
+      });
+    });
+  });
+});
+//取消关注
+router.get('/attentionRemove/:to', function (req, res) {
+  var attentionTo = req.params.to;
+  var cuerrentUser = req.session.user;
+  User.findOne({
+    _id: attentionTo
+  }, function (err, u) {
+    if (err) {
+      console.log(err);
+    }
+    //被关注数减少
+    User.update({
+      _id: u._id
+    }, {
+      $pull: {
+        "attentioned": {
+          "_id": cuerrentUser._id,
+          "name": cuerrentUser.name,
+          "path": cuerrentUser.path
+        }
+      }
+    }, function (err) {
+      if (err) {
+        console.log(err);
+      }
+      //关注数减少
+      User.update({
+        _id: cuerrentUser._id
+      }, {
+        $pull: {
+          "attention": {
+            "_id": u._id,
+            "name": u.name,
+            "path": u.path
+          }
+        }
+      }, function (err) {
+        if (err) {
+          console.log(err);
+        }
+        req.flash('success', '取消关注成功!');
+        res.redirect('/');
+      });
+    });
+  });
 });
 
 module.exports = router;

@@ -9,7 +9,9 @@ var UserSchema = new Schema({
     password: String,
     address: String,
     brithday: String,
-    path: String
+    path: String,
+    attention: [],    //关注
+    attentioned: []   //被关注
 });
 
 var User = mongoose.model('users', UserSchema);

@@ -7,14 +7,14 @@
                 <div class="user-info">
                     <div class="info-top"></div>
                     <div class="user-head">
-                        <a href="/user"><img src="<%= user.path %>"></a>
+                        <a href="/u/<%= user._id %>"><img src="<%= user.path %>"></a>
                     </div>
                     <div class="info-bottom">
                         <span class="user-name"><%= user.name %></span>
                         <div class="user-msg">
                             <ul>
-                                <li><a href="#">发布</a><span><%= count %></span> </li>
-                                <li><a href="#">关注</a><span>10</span> </li>
+                                <li><a href="/u/<%= user._id %>">发布</a><span><%= count %></span> </li>
+                                <li><a href="/follow">关注</a><span><%= user.attention.length %></span> </li>
                                 <li><a href="#">收藏</a><span>10</span> </li>
                             </ul>
                         </div>

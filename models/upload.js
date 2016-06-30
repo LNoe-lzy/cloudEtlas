@@ -61,7 +61,6 @@ exports.imgUpload = function (tmp, file_name, mime, user, info, type, req, res) 
             info: info,
             path: imgpath
         });
-        console.log(newImage);
         newImage.save(function (err) {
             if (err) {
                 console.log(err);
@@ -81,7 +80,7 @@ exports.imgUpload = function (tmp, file_name, mime, user, info, type, req, res) 
                 console.log(err);
             }
             req.flash('success', '头像上传成功!');
-            res.redirect('/user');
+            res.redirect('/');
         });
     }
 };

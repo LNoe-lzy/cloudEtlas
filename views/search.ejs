@@ -1,0 +1,177 @@
+<%- include header.ejs %>
+<div class="page">
+    <div class="page-top">
+        <div class="top-top"></div>
+        <div class="top-head">
+            <img src="<%= user.path %>">
+        </div>
+        <div class="top-bottom">
+            <div class="bottom-info">
+                <ul>
+                    <li><a href="#">已关注</a><span>100</span> </li>
+                    <li><a href="#">关注者</a><span>100</span> </li>
+                </ul>
+            </div>
+            <a href="#" class="btn btn-default btn-edit">编辑个人资料</a>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="page-container">
+        <div class="page-left">
+            <div class="user-data">
+                <a href="#" class="data-name"><%= user.name %></a>
+                <div class="data-info">
+                    <ul>
+                        <li><span class="glyphicon glyphicon-map-marker"></span> <%= user.address %></li>
+                        <li><span class="glyphicon glyphicon-calendar"></span> <%= user.brithday%></li>
+                        <li><span class="glyphicon glyphicon-cloud"></span> <%= user.email %></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="right-container">
+                <div class="right-title">
+                    <span>推荐关注</span> · <a href="#">产看全部</a>
+                </div>
+                <div class="right-rec">
+                    <div class="rec">
+                        <img src="/images/rec1.jpg">
+                        <a href="#" class="rec-name">test1</a>
+                        <a href="#" class="btn btn-default btn-rec"><span class="glyphicon glyphicon-plus"></span> 关注</a>
+                        <a href="#" class="glyphicon glyphicon-remove"></a>
+                    </div>
+                    <div class="rec">
+                        <img src="/images/rec2.jpg">
+                        <a href="#" class="rec-name">test1</a>
+                        <a href="#" class="btn btn-default btn-rec"><span class="glyphicon glyphicon-plus"></span> 关注</a>
+                        <a href="#" class="glyphicon glyphicon-remove"></a>
+                    </div>
+                    <div class="rec">
+                        <img src="/images/rec3.jpg">
+                        <a href="#" class="rec-name">test1</a>
+                        <a href="#" class="btn btn-default btn-rec"><span class="glyphicon glyphicon-plus"></span> 关注</a>
+                        <a href="#" class="glyphicon glyphicon-remove"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="right-container">
+                <div class="right-title">
+                    <span>热门</span> · <a href="#">产看更多</a>
+                </div>
+                <div class="right-popular">
+                    <ul>
+                        <li><a href="#">#popularTest1</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest2</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest3</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest4</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest5</a> <span>1.1w关注</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="follow-main">
+            <!--渲染搜索结果-->
+            <% searchs.forEach(function (s, index) {%>
+            <div class="follow-info">
+                <div class="attention-top">
+                    <div class="attention-head">
+                        <a href="/u/<%= s.name %>"><img src="<%= s.path %>"></a>
+                    </div>
+                </div>
+                <div class="info-bottom">
+                        <span class="attention-name"><%= s.name %>
+                            <a href="" class="send-message">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="send-hide">发送消息</span>
+                            </a>
+                        </span>
+                    <div class="attention-msg">
+                        <p>If you're a Node contrib and you're going</p>
+                        <a href="/u/<%= s._id %>" class="btn btn-green">查看</a>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+
+
+            <div class="follow-info">
+                <div class="attention-top">
+                    <div class="attention-head">
+                        <a href="/user"><img src="/images/rec2.jpg"></a>
+                    </div>
+                </div>
+                <div class="info-bottom">
+                        <span class="attention-name">Test1
+                            <a href="" class="send-message">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="send-hide">发送消息</span>
+                            </a>
+                        </span>
+                    <div class="attention-msg">
+                        <p>If you're a Node contrib and you're going</p>
+                        <a href="#" class="btn btn-green">正在关注</a>
+                    </div>
+                </div>
+            </div>
+            <div class="follow-info">
+                <div class="attention-top">
+                    <div class="attention-head">
+                        <a href="/user"><img src="/images/rec3.jpg"></a>
+                    </div>
+                </div>
+                <div class="info-bottom">
+                        <span class="attention-name">Test2
+                            <a href="" class="send-message">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="send-hide">发送消息</span>
+                            </a>
+                        </span>
+                    <div class="attention-msg">
+                        <p>If you're a Node contrib and you're going</p>
+                        <a href="#" class="btn btn-green">正在关注</a>
+                    </div>
+                </div>
+            </div>
+            <div class="follow-info">
+                <div class="attention-top">
+                    <div class="attention-head">
+                        <a href="/user"><img src="/images/rec4.jpg"></a>
+                    </div>
+                </div>
+                <div class="info-bottom">
+                        <span class="attention-name">Test2
+                            <a href="" class="send-message">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="send-hide">发送消息</span>
+                            </a>
+                        </span>
+                    <div class="attention-msg">
+                        <p>If you're a Node contrib and you're going</p>
+                        <a href="#" class="btn btn-green">正在关注</a>
+                    </div>
+                </div>
+            </div>
+            <div class="follow-info">
+                <div class="attention-top">
+                    <div class="attention-head">
+                        <a href="/user"><img src="/images/rec1.jpg"></a>
+                    </div>
+                </div>
+                <div class="info-bottom">
+                        <span class="attention-name">Test2
+                            <a href="" class="send-message">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="send-hide">发送消息</span>
+                            </a>
+                        </span>
+                    <div class="attention-msg">
+                        <p>If you're a Node contrib and you're going</p>
+                        <a href="#" class="btn btn-green">正在关注</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include footer.ejs %>

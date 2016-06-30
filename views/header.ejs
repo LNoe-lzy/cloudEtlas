@@ -35,9 +35,9 @@
         </div>
         <div class="header-right">
             <div class="right-search">
-                <form class="form-inline">
+                <form class="form-inline" method="get" action="/search">
                     <div class="form-group has-feedback">
-                        <input type="text" class="form-control" id="search" name="search" placeholder="搜索 云图">
+                        <input type="text" class="form-control" id="search" name="search" placeholder="搜索 云图用户">
                         <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
                     </div>
                 </form>
@@ -46,7 +46,7 @@
                 <div class="dropdown">
                     <a class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">L</a>
                     <ul class="dropdown-menu" aria-labelledby="dLabel">
-                        <li><a href="/user">查看个人资料</a> </li>
+                        <li><a href="/u/<%= user._id %>">查看个人资料</a> </li>
                         <li><a href="/logout">退出</a> </li>
                     </ul>
                 </div>
