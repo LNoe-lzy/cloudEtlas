@@ -3,13 +3,13 @@
     <div class="page-top">
         <div class="top-top"></div>
         <div class="top-head">
-            <img src="/images/user.jpg">
+            <img src="<%= user.path %>">
         </div>
         <div class="top-bottom">
             <div class="bottom-info">
                 <ul>
-                    <li><a href="#">已关注</a><span>100</span> </li>
-                    <li><a href="#">关注者</a><span>100</span> </li>
+                    <li><a>已关注</a><span><%= follow %></span> </li>
+                    <li><a href="/followed">关注者</a><span><%= followed %></span> </li>
                 </ul>
             </div>
             <a href="#" class="btn btn-default btn-edit">编辑个人资料</a>
@@ -71,15 +71,15 @@
         </div>
 
         <div class="follow-main">
-            <% user.attention.forEach(function (a) { %>
+            <% followInfo.forEach(function (a) { %>
             <div class="follow-info">
                 <div class="attention-top">
                     <div class="attention-head">
-                        <a href="/u/<%= a._id %>"><img src="<%= a.path %>"></a>
+                        <a href="/u/<%= a.followId %>"><img src="<%= a.followPath %>"></a>
                     </div>
                 </div>
                 <div class="info-bottom">
-                        <span class="attention-name"><%= a.name %>
+                        <span class="attention-name"><%= a.followName %>
                             <a href="" class="send-message">
                                 <span class="glyphicon glyphicon-comment"></span>
                                 <span class="send-hide">发送消息</span>
@@ -87,7 +87,7 @@
                         </span>
                     <div class="attention-msg">
                         <p>If you're a Node contrib and you're going</p>
-                        <a href="/attentionRemove/<%= a._id %>" class="btn btn-green">取消关注</a>
+                        <a href="/attentionRemove/<%= a.followId %>" class="btn btn-green">取消关注</a>
                     </div>
                 </div>
             </div>

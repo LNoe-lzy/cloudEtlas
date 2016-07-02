@@ -2,6 +2,7 @@
 var fs = require('fs');
 var Image = require('./image');
 var User = require('./user');
+var Relaton = require('./relation');
 
 exports.imgUpload = function (tmp, file_name, mime, user, info, type, req, res) {
    //指定存储位置
@@ -79,8 +80,28 @@ exports.imgUpload = function (tmp, file_name, mime, user, info, type, req, res) 
             if (err) {
                 console.log(err);
             }
-            req.flash('success', '头像上传成功!');
-            res.redirect('/');
+            //修改关注被关注的用户信息
+            Relaton.update({
+                userName: user
+            }, {
+                $set: {
+                    userPath: imgpath
+                }
+            }, function (err) {
+                Relaton.update({
+                    followName: user
+                }, {
+                    $set: {
+                        followPath: imgpath
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    req.flash('success', '头像上传成功!');
+                    res.redirect('/');
+                });
+            });
         });
     }
 };

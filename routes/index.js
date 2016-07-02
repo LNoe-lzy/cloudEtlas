@@ -10,11 +10,13 @@ var imgUpload = require('../models/upload');
 
 /*
    引入模型
-   User {name, email, password}
-   Image {user, time, info, path}
+   User 用户模型
+   Image 动态模型
+   Relation 关系模型
  */
 var User = require('../models/user');
 var Image = require('../models/image');
+var Relation = require('../models/relation');
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -36,17 +38,26 @@ router.get('/', function(req, res) {
       //返回用户发布的动态数
       Image.find({
         user: req.session.user.name
-      }).count().exec(function (err, count) {
+      }).count().exec(function (err, c) {
         if (err) {
           console.log('err');
         }
-        res.render('index', {
-          title: '云图',
-          user: user,
-          imgs: img,
-          count: count,
-          error: req.flash('error').toString(),
-          success: req.flash('success').toString()
+        //返回用户的关注数
+        Relation.find({
+          userId: user._id
+        }).count().exec(function (err, r) {
+          if (err) {
+            console.log(err);
+          }
+          res.render('index', {
+            title: '云图',
+            user: user,
+            imgs: img,
+            count: c,
+            relation: r,
+            error: req.flash('error').toString(),
+            success: req.flash('success').toString()
+          });
         });
       });
     });
@@ -55,26 +66,61 @@ router.get('/', function(req, res) {
 
 //get user page
 router.get('/u/:id', function(req, res) {
+  //通过Id找到该用户的信息
   User.findOne({
     _id: req.params.id
   }, function (err, user) {
     if (err) {
       console.log(err);
     }
+    //返回该用户的动态
     Image.find({
       user: user.name
     }, function (err, img) {
       if (err) {
         console.log(err);
       }
-      console.log(user);
-      res.render('user', {
-        title: '云图',
-        user: user,
-        currentUser: req.session.user,
-        imgs: img,
-        error: req.flash('error').toString(),
-        success: req.flash('success').toString()
+      //返回该用户的关注
+      Relation.find({
+        userId: user._id
+      }).count().exec(function (err, r) {
+        if (err) {
+          console.log(err);
+        }
+        Relation.findOne({
+          userId: user._id
+        }, function (err, fi) {
+          if (err) {
+            console.log(err);
+          }
+          //返回被关注数
+          Relation.find({
+            followId: user._id
+          }).count().exec(function (err, cd) {
+            if (err) {
+              console.log(err);
+            }
+            Relation.findOne({
+              followId: user._id
+            }, function (err, fid) {
+              if (err) {
+                console.log(err);
+              }
+              res.render('user', {
+                title: '云图',
+                user: user,
+                currentUser: req.session.user,
+                imgs: img,
+                follow: r,
+                followInfo: fi,
+                followed: cd,
+                followedInfo: fid,
+                error: req.flash('error').toString(),
+                success: req.flash('success').toString()
+              });
+            });
+          });
+        });
       });
     });
   });
@@ -88,11 +134,35 @@ router.get('/follow', function (req, res){
     if (err) {
       console.log(err);
     }
-    res.render('follow', {
-      title: '云图',
-      user: user,
-      error: req.flash('error').toString(),
-      success: req.flash('success').toString()
+    Relation.find({
+      userId: user._id
+    }).count().exec(function (err, c) {
+      if (err) {
+        console.log(err);
+      }
+      Relation.find({
+        userId: user._id
+      }, function (err, f) {
+        if (err) {
+          console.log(err);
+        }
+        Relation.find({
+          followId: user._id
+        }).count().exec(function (err, cd) {
+          if (err) {
+            console.log(err);
+          }
+          res.render('follow', {
+            title: '云图',
+            user: user,
+            follow: c,
+            followed: cd,
+            followInfo: f,
+            error: req.flash('error').toString(),
+            success: req.flash('success').toString()
+          });
+        });
+      })
     });
   });
 });
@@ -105,11 +175,35 @@ router.get('/followed', function (req, res){
     if (err) {
       console.log(err);
     }
-    res.render('followed', {
-      title: '云图',
-      user: user,
-      error: req.flash('error').toString(),
-      success: req.flash('success').toString()
+    Relation.find({
+      userId: user._id
+    }).count().exec(function (err, c) {
+      if (err) {
+        console.log(err);
+      }
+      Relation.find({
+        followId: user._id
+      }, function (err, f) {
+        if (err) {
+          console.log(err);
+        }
+        Relation.find({
+          followId: user._id
+        }).count().exec(function (err, cd) {
+          if (err) {
+            console.log(err);
+          }
+          res.render('followed', {
+            title: '云图',
+            user: user,
+            follow: c,
+            followed: cd,
+            followedInfo: f,
+            error: req.flash('error').toString(),
+            success: req.flash('success').toString()
+          });
+        });
+      })
     });
   });
 });
@@ -231,7 +325,7 @@ router.get('/delete', function (req, res) {
 
 //编辑用户信息
 router.post('/editinfo', function (req, res) {
-  var currentUser = req.session.user.name;
+  var currentUser = req.session.user;
   var editData = {
     name: req.body.name,
     email: req.body.email,
@@ -239,7 +333,7 @@ router.post('/editinfo', function (req, res) {
     brithday: req.body.brithday
   };
   User.update({
-    name: currentUser
+    name: currentUser.name
   }, {
     $set: {
       name: editData.name,
@@ -251,9 +345,29 @@ router.post('/editinfo', function (req, res) {
     if (err) {
       console.log(err);
     }
-    req.session.user = null;
-    req.flash('success', '修改信息成功!');
-    res.redirect('/logout');
+    //修改关注被关注的用户信息
+    Relaton.update({
+      userId: currentUser._id
+    }, {
+      $set: {
+        userName: editData.name
+      }
+    }, function (err) {
+      Relaton.update({
+        followId: currentUser._id
+      }, {
+        $set: {
+          followName: editData.name
+        }
+      }, function (err) {
+        if (err) {
+          console.log(err);
+        }
+        req.session.user = null;
+        req.flash('success', '修改信息成功!');
+        res.redirect('/logout');
+      });
+    });
   });
 });
 
@@ -302,85 +416,46 @@ router.get('/attention/:to', function (req, res) {
     if (err) {
       console.log(err);
     }
-    //被关注数增加
-    User.update({
-      _id: u._id
-    }, {
-      $push: {
-        "attentioned": {
-          "_id": currentUser._id,
-          "name": currentUser.name,
-          "path": currentUser.path
-        }
-      }
-    }, function (err) {
+    var newRelation = new Relation({
+      userId: currentUser._id,
+      userName: currentUser.name,
+      userPath: currentUser.path,
+      followId: attentionTo,
+      followName: u.name,
+      followPath: u.path
+    });
+    newRelation.save(function (err) {
       if (err) {
         console.log(err);
       }
-      //关注数增加
-      User.update({
-        _id: currentUser._id
-      }, {
-        $push: {
-          "attention": {
-            "_id": u._id,
-            "name": u.name,
-            "path": u.path
-          }
-        }
-      }, function (err) {
-        if (err) {
-          console.log(err);
-        }
-        req.flash('success', '关注成功!');
-        res.redirect('/');
-      });
+      req.flash('success', '关注成功!');
+      res.redirect('/');
     });
   });
 });
 //取消关注
 router.get('/attentionRemove/:to', function (req, res) {
   var attentionTo = req.params.to;
-  var cuerrentUser = req.session.user;
+  var currentUser = req.session.user;
   User.findOne({
     _id: attentionTo
   }, function (err, u) {
     if (err) {
       console.log(err);
     }
-    //被关注数减少
-    User.update({
-      _id: u._id
-    }, {
-      $pull: {
-        "attentioned": {
-          "_id": cuerrentUser._id,
-          "name": cuerrentUser.name,
-          "path": cuerrentUser.path
-        }
-      }
+    Relation.remove({
+      userId: currentUser._id,
+      userName: currentUser.name,
+      userPath: currentUser.path,
+      followId: attentionTo,
+      followName: u.name,
+      followPath: u.path
     }, function (err) {
       if (err) {
         console.log(err);
       }
-      //关注数减少
-      User.update({
-        _id: cuerrentUser._id
-      }, {
-        $pull: {
-          "attention": {
-            "_id": u._id,
-            "name": u.name,
-            "path": u.path
-          }
-        }
-      }, function (err) {
-        if (err) {
-          console.log(err);
-        }
-        req.flash('success', '取消关注成功!');
-        res.redirect('/');
-      });
+      req.flash('success', '取消关注成功');
+      res.redirect('/');
     });
   });
 });

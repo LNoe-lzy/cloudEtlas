@@ -8,8 +8,8 @@
         <div class="top-bottom">
             <div class="bottom-info">
                 <ul>
-                    <li><a href="#">已关注</a><span><%= user.attention.length %></span> </li>
-                    <li><a href="#">关注者</a><span><%= user.attentioned.length %></span> </li>
+                    <li><a href="/follow">已关注</a><span><%= follow %></span> </li>
+                    <li><a href="/followed">关注者</a><span><%= followed %></span> </li>
                 </ul>
             </div>
             <% if (currentUser.name === user.name) { %>
@@ -33,6 +33,7 @@
                 </div>
             </div>
 
+            <% if (followInfo) { %>
             <div class="left-container">
                 <div class="left-attention">
                     <div class="right-title">
@@ -43,11 +44,11 @@
                 <div class="attention-info">
                     <div class="attention-top">
                         <div class="attention-head">
-                            <a href="/u/<%= user.attention[0]._id %>"><img src="<%= user.attention[0].path %>"></a>
+                            <a href="/u/<%= followInfo.followId %>"><img src="<%= followInfo.followPath %>"></a>
                         </div>
                     </div>
                     <div class="info-bottom">
-                        <span class="attention-name"><%= user.attention[0].name %>
+                        <span class="attention-name"><%= followInfo.followName %>
                             <a href="" class="send-message">
                                 <span class="glyphicon glyphicon-comment"></span>
                                 <span class="send-hide">发送消息</span>
@@ -55,13 +56,15 @@
                         </span>
                         <div class="attention-msg">
                             <p>If you're a Node contrib and you're going</p>
-                            <a href="/attentionRemove/<%= user.attention[0]._id %>" class="btn btn-green">取消关注 </a>
+                            <a href="/attentionRemove/<%= followInfo.followId %>" class="btn btn-green">取消关注 </a>
                         </div>
                     </div>
                 </div>
 
             </div>
+            <% } %>
 
+            <% if (followedInfo) { %>
             <div class="left-container">
                 <div class="left-attention">
                     <div class="right-title">
@@ -72,11 +75,11 @@
                 <div class="attention-info">
                     <div class="attention-top">
                         <div class="attention-head">
-                            <a href="/u/<%= user.attentioned[0]._id %>"><img src="<%= user.attentioned[0].path %>"></a>
+                            <a href="/u/<%= followedInfo.userId %>"><img src="<%= followedInfo.userPath %>"></a>
                         </div>
                     </div>
                     <div class="info-bottom">
-                        <span class="attention-name"><%= user.attentioned[0].name %>
+                        <span class="attention-name"><%= followedInfo.userName %>
                             <a href="" class="send-message">
                                 <span class="glyphicon glyphicon-comment"></span>
                                 <span class="send-hide">发送消息</span>
@@ -90,6 +93,7 @@
                 </div>
 
             </div>
+            <% } %>
 
         </div>
 
