@@ -5,6 +5,7 @@ var formidable = require('formidable');
 var fs = require('fs');
 var multer = require('multer');
 var upload = multer({dest: 'public/images/tmp/'});
+var async = require('async');
 
 var imgUpload = require('../models/upload');
 
@@ -17,9 +18,15 @@ var imgUpload = require('../models/upload');
 var User = require('../models/user');
 var Image = require('../models/image');
 var Relation = require('../models/relation');
+var Tool = require('../models/tool');
 
 /* GET home page. */
 router.get('/', function(req, res) {
+  var imgArray = [];
+  // 如果当前的session无用户存在,曾返回登录界面
+  if (!req.session.user) {
+    res.redirect('/login');
+  }
   User.findOne({
     name: req.session.user.name
   }, function (err, user) {
@@ -49,14 +56,42 @@ router.get('/', function(req, res) {
           if (err) {
             console.log(err);
           }
-          res.render('index', {
-            title: '云图',
-            user: user,
-            imgs: img,
-            count: c,
-            relation: r,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
+          // 将用户关注的用户与用户的数据通过数组返回渲染
+          var imgAsync = function (callback) {
+            async.mapSeries(user.follow, function (elem, callback) {
+              Image.find({
+                user: elem
+              }, function (err, fImg) {
+                if (err) {
+                  return callback(err);
+                }
+                fImg.forEach(function (e) {
+                  imgArray.push(e);
+                });
+                callback(null);
+              });
+            }, function (err) {
+              if (err) {
+                console.log(err);
+              }
+              img.forEach(function (e) {
+                imgArray.push(e);
+              });
+              res.render('index', {
+                title: '云图',
+                user: user,
+                imgs: imgArray.sort(Tool.keysort('_id', true)),
+                count: c,
+                relation: r,
+                error: req.flash('error').toString(),
+                success: req.flash('success').toString()
+              });
+            });
+          };
+          imgAsync(function (err) {
+            if (err) {
+              console.log(err);
+            }
           });
         });
       });
@@ -346,14 +381,14 @@ router.post('/editinfo', function (req, res) {
       console.log(err);
     }
     //修改关注被关注的用户信息
-    Relaton.update({
+    Relation.update({
       userId: currentUser._id
     }, {
       $set: {
         userName: editData.name
       }
     }, function (err) {
-      Relaton.update({
+      Relation.update({
         followId: currentUser._id
       }, {
         $set: {
@@ -428,8 +463,17 @@ router.get('/attention/:to', function (req, res) {
       if (err) {
         console.log(err);
       }
-      req.flash('success', '关注成功!');
-      res.redirect('/');
+      User.update({
+        name: req.session.user.name
+      }, {
+        $push: {'follow': u.name}
+      }, function (err) {
+        if (err) {
+          console.log(err);
+        }
+        req.flash('success', '关注成功!');
+        res.redirect('/');
+      });
     });
   });
 });
@@ -454,8 +498,20 @@ router.get('/attentionRemove/:to', function (req, res) {
       if (err) {
         console.log(err);
       }
-      req.flash('success', '取消关注成功');
-      res.redirect('/');
+      User.update({
+        name: req.session.user.name
+      }, {
+        $pull: {
+          'follow': u.name
+        }
+      }, function (err) {
+        if (err) {
+          console.log(err);
+        }
+        req.flash('success', '取消关注成功');
+        res.redirect('/');
+      });
+
     });
   });
 });
