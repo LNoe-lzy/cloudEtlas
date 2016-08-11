@@ -43,13 +43,15 @@ $(document).ready(function () {
         $('.delete').each(function () {
             var that = $(this);
             that.click(function () {
-                var imgPath = that.parent().find('.msg-img img').attr('src');
+                var imgPath = that.parent().find('.msg-img img').attr('src'),
+                    imgUser = that.parent().find('.msg-user').html();
                 $.ajax({
                     type: 'get',
                     dataType: 'json',
                     url: '/delete',
                     data: {
-                        imgPath: imgPath
+                        imgPath: imgPath,
+                        imgUser: imgUser
                     }
                 });
             });
@@ -87,9 +89,29 @@ $(document).ready(function () {
                 id: imgId
             };
         $.ajax({
-            type: 'POST',
+            type: 'get',
             dataType: 'json',
             url: '/love',
+            data: data
+        });
+    });
+    // 转发
+    $('.module-forward a').click(function () {
+        var parent = $(this).parent().parent().parent(),
+            user = parent.find('.msg-user').html(),
+            info = parent.find('.msg-info').html(),
+            path = parent.find('.msg-img').find('img').attr('src'),
+            head = parent.find('.msg-head').find('img').attr('src');
+            data = {
+                user: user,
+                info: info,
+                path: path,
+                head: head
+            };
+        $.ajax({
+            type: 'get',
+            dataType: 'json',
+            url: '/forward',
             data: data
         });
     });

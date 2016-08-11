@@ -51,7 +51,7 @@
                             <span> · </span>
                             <span class="msg-time"><%= img.time %></span>
                             <div class="msg-con" data-toggle="modal" data-target="#imgModal">
-                                <p class="msg-info"><%= img.info %></p>
+                                <p class="msg-info"><%- img.info %></p>
                                 <div class="msg-img">
                                     <img src="<%= img.path %>">
                                 </div>
@@ -65,7 +65,7 @@
                                 </a>
                             </div>
                             <div class="module-forward">
-                                <a class="module-control">
+                                <a class="module-control" href="/forward">
                                     <span class="glyphicon glyphicon-share-alt"></span>
                                     <span class="module-hide">转发</span>
                                 </a>

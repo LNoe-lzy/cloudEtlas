@@ -390,7 +390,8 @@ router.post('/send', upload.single('image'), function (req, res){
 //删除发表的动态
 router.get('/delete', function (req, res) {
   Image.remove({
-    path: req.query.imgPath
+    path: req.query.imgPath,
+    user: req.query.imgUser
   }, function (err) {
     if (err) {
       console.log(err);
@@ -582,9 +583,9 @@ router.get('/attentionRemove/:to', function (req, res) {
 });
 
 // 动态喜欢
-router.post('/love', function (req, res) {
-  var user = req.body.user,
-      id = req.body.id;
+router.get('/love', function (req, res) {
+  var user = req.query.user,
+      id = req.query.id;
   Image.update({
     user: user,
     _id: id
@@ -597,6 +598,27 @@ router.post('/love', function (req, res) {
       console.log(err);
     }
     res.redirect('/');
+  });
+});
+// 转发
+router.get('/forward', function (req, res) {
+  var data = req.query,
+      time = Tool.getTime();
+  var forward = '<span class="forward-span">转:' + data.user + '</span>';
+  var newImage = new Image({
+    user: req.session.user.name,
+    userId: req.session.user._id,
+    time: time.day,
+    info: forward + data.info,
+    path: data.path,
+    head: req.session.user.path
+  });
+  newImage.save(function (err) {
+    if (err) {
+      console.log(err);
+    }
+    req.flash('success', '转发成功!');
+    return res.redirect('/');
   });
 });
 

@@ -360,6 +360,11 @@ ul li {
 .msg-img img {
   width: 100%;
 }
+.forward-span {
+  font-weight: bold;
+  color: rgb(25, 202, 173);
+  margin-right: .5em;
+}
 .rec-module {
   margin-top: .8em;
   font-size: 1.4em;
