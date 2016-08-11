@@ -409,6 +409,17 @@ ul li {
   top: .5em;
   right: .5em;
 }
+.love-span {
+  position: absolute;
+  top: .3em;
+  right: -2.2em;
+  font-size: .6em;
+  font-weight: bold;
+  color: #ffffff;
+  background: rgb(25, 202, 173);
+  padding: 0 .4em;
+  border-radius: 3px;
+}
 
 /* user */
 /* user top */

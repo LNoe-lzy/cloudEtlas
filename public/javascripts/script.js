@@ -76,5 +76,21 @@ $(document).ready(function () {
         $('#edit-userhead').change(function () {
             $('#edit-hide-btn').fadeIn();
         });
-    })
+    });
+    // 用户文章喜欢
+    $('.module-like a').click(function () {
+        var parent = $(this).parent().parent().parent(),
+            user = parent.find('.msg-user').html(),
+            imgId = parent.attr('data-id'),
+            data = {
+                user: user,
+                id: imgId
+            };
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '/love',
+            data: data
+        });
+    });
 });

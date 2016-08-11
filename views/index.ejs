@@ -38,7 +38,7 @@
                 <!--渲染数据库数据-->
                 <% imgs.forEach(function (img, index) {%>
                 <div class="msg-container">
-                    <div class="msg">
+                    <div class="msg" data-id="<%= img._id %>">
                         <div class="msg-head">
                             <img src="<%= img.head %>">
                         </div>
@@ -75,6 +75,9 @@
                                     <span class="glyphicon glyphicon-heart"></span>
                                     <span class="module-hide">喜欢</span>
                                 </a>
+                                <% if (img.love !== 0) { %>
+                                <span class="love-span"><%= img.love %></span>
+                                <% } %>
                             </div>
                             <div class="module-collect">
                                 <a class="module-control">

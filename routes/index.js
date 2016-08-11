@@ -581,4 +581,23 @@ router.get('/attentionRemove/:to', function (req, res) {
   });
 });
 
+// 动态喜欢
+router.post('/love', function (req, res) {
+  var user = req.body.user,
+      id = req.body.id;
+  Image.update({
+    user: user,
+    _id: id
+  }, {
+    $inc: {
+      'love': 1
+    }
+  }, function (err) {
+    if (err) {
+      console.log(err);
+    }
+    res.redirect('/');
+  });
+});
+
 module.exports = router;
