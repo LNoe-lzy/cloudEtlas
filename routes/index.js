@@ -25,7 +25,7 @@ router.get('/', function(req, res) {
   var imgArray = [];
   // 如果当前的session无用户存在,曾返回登录界面
   if (!req.session.user) {
-    res.redirect('/login');
+    return res.redirect('/login');
   }
   User.findOne({
     name: req.session.user.name
@@ -56,42 +56,50 @@ router.get('/', function(req, res) {
           if (err) {
             console.log(err);
           }
-          // 将用户关注的用户与用户的数据通过数组返回渲染
-          var imgAsync = function (callback) {
-            async.mapSeries(user.follow, function (elem, callback) {
-              Image.find({
-                user: elem
-              }, function (err, fImg) {
-                if (err) {
-                  return callback(err);
-                }
-                fImg.forEach(function (e) {
-                  imgArray.push(e);
-                });
-                callback(null);
-              });
-            }, function (err) {
-              if (err) {
-                console.log(err);
-              }
-              img.forEach(function (e) {
-                imgArray.push(e);
-              });
-              res.render('index', {
-                title: '云图',
-                user: user,
-                imgs: imgArray.sort(Tool.keysort('_id', true)),
-                count: c,
-                relation: r,
-                error: req.flash('error').toString(),
-                success: req.flash('success').toString()
-              });
-            });
-          };
-          imgAsync(function (err) {
+          User.find(null).sort({
+            'followed': -1
+          }).limit(3).exec(function (err, rec) {
             if (err) {
               console.log(err);
             }
+            // 将用户关注的用户与用户的数据通过数组返回渲染
+            var imgAsync = function (callback) {
+              async.mapSeries(user.follow, function (elem, callback) {
+                Image.find({
+                  user: elem
+                }, function (err, fImg) {
+                  if (err) {
+                    return callback(err);
+                  }
+                  fImg.forEach(function (e) {
+                    imgArray.push(e);
+                  });
+                  callback(null);
+                });
+              }, function (err) {
+                if (err) {
+                  console.log(err);
+                }
+                img.forEach(function (e) {
+                  imgArray.push(e);
+                });
+                res.render('index', {
+                  title: '云图',
+                  user: user,
+                  imgs: imgArray.sort(Tool.keysort('_id', true)),
+                  count: c,
+                  relation: r,
+                  recommend: rec,
+                  error: req.flash('error').toString(),
+                  success: req.flash('success').toString()
+                });
+              });
+            };
+            imgAsync(function (err) {
+              if (err) {
+                console.log(err);
+              }
+            });
           });
         });
       });
@@ -141,17 +149,32 @@ router.get('/u/:id', function(req, res) {
               if (err) {
                 console.log(err);
               }
-              res.render('user', {
-                title: '云图',
-                user: user,
-                currentUser: req.session.user,
-                imgs: img,
-                follow: r,
-                followInfo: fi,
-                followed: cd,
-                followedInfo: fid,
-                error: req.flash('error').toString(),
-                success: req.flash('success').toString()
+              Relation.find({
+                userId: user._id
+              }).count().exec(function (err, r) {
+                if (err) {
+                  console.log(err);
+                }
+                User.find(null).sort({
+                  'followed': -1
+                }).limit(3).exec(function (err, rec) {
+                  if (err) {
+                    console.log(err);
+                  }
+                  res.render('user', {
+                    title: '云图',
+                    user: user,
+                    currentUser: req.session.user,
+                    imgs: img,
+                    follow: r,
+                    followInfo: fi,
+                    followed: cd,
+                    followedInfo: fid,
+                    recommend: rec,
+                    error: req.flash('error').toString(),
+                    success: req.flash('success').toString()
+                  });
+                });
               });
             });
           });
@@ -187,14 +210,22 @@ router.get('/follow', function (req, res){
           if (err) {
             console.log(err);
           }
-          res.render('follow', {
-            title: '云图',
-            user: user,
-            follow: c,
-            followed: cd,
-            followInfo: f,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
+          User.find(null).sort({
+            'followed': -1
+          }).limit(3).exec(function (err, rec) {
+            if (err) {
+              console.log(err);
+            }
+            res.render('follow', {
+              title: '云图',
+              user: user,
+              follow: c,
+              followed: cd,
+              followInfo: f,
+              recommend: rec,
+              error: req.flash('error').toString(),
+              success: req.flash('success').toString()
+            });
           });
         });
       })
@@ -228,14 +259,22 @@ router.get('/followed', function (req, res){
           if (err) {
             console.log(err);
           }
-          res.render('followed', {
-            title: '云图',
-            user: user,
-            follow: c,
-            followed: cd,
-            followedInfo: f,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
+          User.find(null).sort({
+            'followed': -1
+          }).limit(3).exec(function (err, rec) {
+            if (err) {
+              console.log(err);
+            }
+            res.render('followed', {
+              title: '云图',
+              user: user,
+              follow: c,
+              followed: cd,
+              followedInfo: f,
+              recommend: rec,
+              error: req.flash('error').toString(),
+              success: req.flash('success').toString()
+            });
           });
         });
       })
@@ -337,12 +376,15 @@ router.get('/logout', function (req, res) {
 
 //发布动态
 router.post('/send', upload.single('image'), function (req, res){
-  var info = req.body.info;
-  var username = req.session.user.name;
-  var tmp_path = req.file.path;
-  var file_name = req.file.filename;
-  var mimeType = req.file.mimetype;
-  imgUpload.imgUpload(tmp_path, file_name, mimeType, username, info, 'upload', req, res);
+  var currentUser = req.session.user,
+      info = req.body.info,
+      username = currentUser.name,
+      userhead = currentUser.path,
+      userId = currentUser._id,
+      tmp_path = req.file.path,
+      file_name = req.file.filename,
+      mimeType = req.file.mimetype;
+  imgUpload.imgUpload(tmp_path, file_name, mimeType, username, info, userhead, userId, 'upload', req, res);
 });
 
 //删除发表的动态
@@ -354,7 +396,7 @@ router.get('/delete', function (req, res) {
       console.log(err);
     }
     req.flash('success', '删除成功!');
-    res.redirect('/');
+    res.redirect('/u/' + req.session.user._id);
   });
 });
 
@@ -412,7 +454,7 @@ router.post('/edithead', upload.single('userhead'), function (req, res) {
   var tmp_path = req.file.path;
   var file_name = req.file.filename;
   var mimeType = req.file.mimetype;
-  imgUpload.imgUpload(tmp_path, file_name, mimeType, username, null, 'user', req, res);
+  imgUpload.imgUpload(tmp_path, file_name, mimeType, username, null, null, null, 'user', req, res);
 });
 
 //用户搜索
@@ -464,15 +506,28 @@ router.get('/attention/:to', function (req, res) {
         console.log(err);
       }
       User.update({
-        name: req.session.user.name
+        name: currentUser.name
       }, {
-        $push: {'follow': u.name}
+        $push: {
+          'follow': u.name
+        }
       }, function (err) {
         if (err) {
           console.log(err);
         }
-        req.flash('success', '关注成功!');
-        res.redirect('/');
+        User.update({
+          name: u.name
+        }, {
+          $inc: {
+            'followed': 1
+          }
+        }, function (err) {
+          if (err) {
+            console.log(err);
+          }
+          req.flash('success', '关注成功!');
+          res.redirect('/');
+        });
       });
     });
   });
@@ -499,7 +554,7 @@ router.get('/attentionRemove/:to', function (req, res) {
         console.log(err);
       }
       User.update({
-        name: req.session.user.name
+        name: currentUser.name
       }, {
         $pull: {
           'follow': u.name
@@ -508,10 +563,20 @@ router.get('/attentionRemove/:to', function (req, res) {
         if (err) {
           console.log(err);
         }
-        req.flash('success', '取消关注成功');
-        res.redirect('/');
+        User.update({
+          name: u.name
+        }, {
+          $inc: {
+            'followed': -1
+          }
+        }, function (err) {
+          if (err) {
+            console.log(err);
+          }
+          req.flash('success', '取消关注成功');
+          res.redirect('/');
+        });
       });
-
     });
   });
 });

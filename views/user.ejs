@@ -149,62 +149,6 @@
                 </div>
                 <% }) %>
 
-                <div class="msg">
-                    <div class="msg-head">
-                        <img src="/images/user.jpg">
-                    </div>
-                    <a href="#" class="msg-hide">
-                        <span class="glyphicon glyphicon-trash"></span>
-                        <span class="msg-hidet">删除</span>
-                    </a>
-                    <div class="msg-main">
-                        <a href="#" class="msg-user">LZY</a>
-                        <span> · </span>
-                        <span class="msg-time">2014-6-20</span>
-                        <p class="msg-info">If you're a Node contrib and you're going to Interactive in EU in Sept, don't forget there is a two day collab summit after the main conf.</p>
-                        <div class="msg-img">
-                            <img src="/images/rec4.jpg">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="msg">
-                    <div class="msg-head">
-                        <img src="/images/user.jpg">
-                    </div>
-                    <a href="#" class="msg-hide">
-                        <span class="glyphicon glyphicon-trash"></span>
-                        <span class="msg-hidet">删除</span>
-                    </a>
-                    <div class="msg-main">
-                        <a href="#" class="msg-user">LZY</a>
-                        <span> · </span>
-                        <span class="msg-time">2014-6-20</span>
-                        <p class="msg-info">If you're a Node contrib and you're going to Interactive in EU in Sept, don't forget there is a two day collab summit after the main conf.</p>
-                        <div class="msg-img">
-                            <img src="/images/rec5.jpg">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="msg">
-                    <div class="msg-head">
-                        <img src="/images/user.jpg">
-                    </div>
-                    <a href="#" class="msg-hide">
-                        <span class="glyphicon glyphicon-trash"></span>
-                        <span class="msg-hidet">删除</span>
-                    </a>
-                    <div class="msg-main">
-                        <a href="#" class="msg-user">LZY</a>
-                        <span> · </span>
-                        <span class="msg-time">2014-6-20</span>
-                        <p class="msg-info">If you're a Node contrib and you're going to Interactive in EU in Sept, don't forget there is a two day collab summit after the main conf.</p>
-                        <div class="msg-img">
-                            <img src="/images/rec6.jpg">
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="page-right">
@@ -213,24 +157,14 @@
                     <span>推荐关注</span> · <a href="#">产看全部</a>
                 </div>
                 <div class="right-rec">
+                    <% recommend.forEach(function (r) {%>
                     <div class="rec">
-                        <img src="/images/rec1.jpg">
-                        <a href="#" class="rec-name">test1</a>
+                        <img src="<%= r.path %>">
+                        <a href="/u/<%= r._id %>" class="rec-name"><%= r.name %></a>
                         <a href="#" class="btn btn-default btn-rec"><span class="glyphicon glyphicon-plus"></span> 关注</a>
                         <a href="#" class="glyphicon glyphicon-remove"></a>
                     </div>
-                    <div class="rec">
-                        <img src="/images/rec2.jpg">
-                        <a href="#" class="rec-name">test1</a>
-                        <a href="#" class="btn btn-default btn-rec"><span class="glyphicon glyphicon-plus"></span> 关注</a>
-                        <a href="#" class="glyphicon glyphicon-remove"></a>
-                    </div>
-                    <div class="rec">
-                        <img src="/images/rec3.jpg">
-                        <a href="#" class="rec-name">test1</a>
-                        <a href="#" class="btn btn-default btn-rec"><span class="glyphicon glyphicon-plus"></span> 关注</a>
-                        <a href="#" class="glyphicon glyphicon-remove"></a>
-                    </div>
+                    <% }) %>
                 </div>
             </div>
             <div class="right-container">

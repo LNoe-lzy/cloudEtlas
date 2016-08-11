@@ -4,7 +4,7 @@ var Image = require('./image');
 var User = require('./user');
 var Relaton = require('./relation');
 
-exports.imgUpload = function (tmp, file_name, mime, user, info, type, req, res) {
+exports.imgUpload = function (tmp, file_name, mime, user, info, head, id, type, req, res) {
    //指定存储位置
     var target_path = 'public/images/'+ type +'/' + file_name;
     var extName = '';
@@ -60,7 +60,9 @@ exports.imgUpload = function (tmp, file_name, mime, user, info, type, req, res) 
             user: user,
             time: time.day,
             info: info,
-            path: imgpath
+            path: imgpath,
+            head: head,
+            userId: id
         });
         newImage.save(function (err) {
             if (err) {

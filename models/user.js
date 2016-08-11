@@ -11,7 +11,7 @@ var UserSchema = new Schema({
     brithday: String,
     path: String,
     follow: [],    //关注
-    followed: []   //被关注
+    followed: Number   //被关注
 });
 
 var User = mongoose.model('users', UserSchema);

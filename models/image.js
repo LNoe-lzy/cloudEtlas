@@ -5,9 +5,11 @@ var mongoose = require('mongoose'),
 
 var ImageSchema = new Schema({
     user: String,
+    userId: String,
     time: String,
     info: String,
-    path: String
+    path: String,
+    head: String
 });
 
 var Image = mongoose.model('images', ImageSchema);
