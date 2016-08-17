@@ -622,4 +622,22 @@ router.get('/forward', function (req, res) {
   });
 });
 
+// 评论
+router.post('/comment', function (req, res) {
+  Image.update({
+    user: req.body.user
+  }, {
+    $push: {'comment': {
+      commentUser: req.session.user.name,
+      commentInfo: req.body.text,
+      commentHead: req.session.user.path
+    }}
+  }, function (err) {
+    if (err) {
+      console.log(err);
+    }
+    res.redirect('/');
+  });
+});
+
 module.exports = router;

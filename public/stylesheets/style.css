@@ -5,7 +5,7 @@ input:-webkit-autofill {
   border: 1px solid rgb(25, 202, 173)!important;
 }
 * {
-  margin: 0 auto;
+  margin: 0;
   padding: 0;
   transition: all 300ms
 }
@@ -359,6 +359,31 @@ ul li {
 }
 .msg-img img {
   width: 100%;
+}
+/* 评论区 */
+.msg-comment {
+  margin: .8em;
+}
+.comment-head {
+  height: 30px;
+  width: 30px;
+  border-radius: 5px;
+  overflow: hidden;
+  float: left;
+  border: 1px solid rgb(25, 202, 173);
+}
+.comment-head img {
+  width: 100%;
+  height: 100%;
+}
+.comment-info {
+  float: left;
+  line-height: 30px;
+  margin-left: .5em;
+}
+.comment-user {
+  color: rgb(25, 202, 173);
+  font-weight: bold;
 }
 .forward-span {
   font-weight: bold;

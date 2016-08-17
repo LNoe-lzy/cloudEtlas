@@ -115,4 +115,19 @@ $(document).ready(function () {
             data: data
         });
     });
+
+    // 评论
+    $('.comment-btn').click(function () {
+        var user = $(this).parent().parent().parent().parent().find('.msg-user').html(),
+            text = $(this).parent().parent().find('.comment-text').val();
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '/comment',
+            data: {
+                user: user,
+                text: text
+            }
+        });
+    });
 });

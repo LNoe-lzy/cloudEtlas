@@ -36,7 +36,7 @@
             </div>
             <div class="page-msg">
                 <!--渲染数据库数据-->
-                <% imgs.forEach(function (img, index) {%>
+                <% imgs.forEach(function (img) {%>
                 <div class="msg-container">
                     <div class="msg" data-id="<%= img._id %>">
                         <div class="msg-head">
@@ -55,6 +55,15 @@
                                 <div class="msg-img">
                                     <img src="<%= img.path %>">
                                 </div>
+                                <% img.comment.forEach(function (c) { %>
+                                <div class="msg-comment">
+                                    <div class="comment-head"><img src="<%= c.commentHead %>"></div>
+                                    <div class="comment-info">
+                                        <p><span class="comment-user"><%= c.commentUser %>:</span> <%= c.commentInfo %></p>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                                <% }) %>
                             </div>
                         </div>
                         <div class="rec-module">
@@ -90,9 +99,9 @@
                     </div>
                     <div class="comment-text">
                         <span class="comment-close glyphicon glyphicon-remove"></span>
-                        <form>
+                        <form action="/comment" method="post">
                             <div class="input-group text-group">
-                                <textarea class="form-control" rows="2" placeholder="在云图,写下自己想说的!"></textarea>
+                                <textarea class="form-control comment-text" rows="2" placeholder="在云图,写下自己想说的!"></textarea>
                             </div>
                             <div class="form-left">
                                 <div class="form-image">
@@ -105,7 +114,7 @@
                                 </div>
                             </div>
                             <div class="form-right">
-                                <button type="submit" class="btn btn-green">
+                                <button type="submit" class="btn btn-green comment-btn">
                                     <span class="glyphicon glyphicon-send"></span>
                                     回复
                                 </button>

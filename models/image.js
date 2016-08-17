@@ -10,7 +10,8 @@ var ImageSchema = new Schema({
     info: String,
     path: String,
     head: String,
-    love: Number
+    love: Number,
+    comment: []
 });
 
 var Image = mongoose.model('images', ImageSchema);
