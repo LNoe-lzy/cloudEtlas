@@ -14,11 +14,14 @@ var imgUpload = require('../models/upload');
    User 用户模型
    Image 动态模型
    Relation 关系模型
+   Collection 收藏模型
+   Tool 工具模块
  */
-var User = require('../models/user');
-var Image = require('../models/image');
-var Relation = require('../models/relation');
-var Tool = require('../models/tool');
+var User = require('../models/user'),
+    Image = require('../models/image'),
+    Relation = require('../models/relation'),
+    Collection = require('../models/collection'),
+    Tool = require('../models/tool');
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -62,43 +65,51 @@ router.get('/', function(req, res) {
             if (err) {
               console.log(err);
             }
-            // 将用户关注的用户与用户的数据通过数组返回渲染
-            var imgAsync = function (callback) {
-              async.mapSeries(user.follow, function (elem, callback) {
-                Image.find({
-                  user: elem
-                }, function (err, fImg) {
-                  if (err) {
-                    return callback(err);
-                  }
-                  fImg.forEach(function (e) {
-                    imgArray.push(e);
-                  });
-                  callback(null);
-                });
-              }, function (err) {
-                if (err) {
-                  console.log(err);
-                }
-                img.forEach(function (e) {
-                  imgArray.push(e);
-                });
-                res.render('index', {
-                  title: '云图',
-                  user: user,
-                  imgs: imgArray.sort(Tool.keysort('_id', true)),
-                  count: c,
-                  relation: r,
-                  recommend: rec,
-                  error: req.flash('error').toString(),
-                  success: req.flash('success').toString()
-                });
-              });
-            };
-            imgAsync(function (err) {
+            Collection.find({
+              user: req.session.user.name
+            }).count().exec(function (err, col) {
               if (err) {
                 console.log(err);
               }
+              // 将用户关注的用户与用户的数据通过数组返回渲染
+              var imgAsync = function (callback) {
+                async.mapSeries(user.follow, function (elem, callback) {
+                  Image.find({
+                    user: elem
+                  }, function (err, fImg) {
+                    if (err) {
+                      return callback(err);
+                    }
+                    fImg.forEach(function (e) {
+                      imgArray.push(e);
+                    });
+                    callback(null);
+                  });
+                }, function (err) {
+                  if (err) {
+                    console.log(err);
+                  }
+                  img.forEach(function (e) {
+                    imgArray.push(e);
+                  });
+                  res.render('index', {
+                    title: '云图',
+                    user: user,
+                    imgs: imgArray.sort(Tool.keysort('_id', true)),
+                    count: c,
+                    collection: col,
+                    relation: r,
+                    recommend: rec,
+                    error: req.flash('error').toString(),
+                    success: req.flash('success').toString()
+                  });
+                });
+              };
+              imgAsync(function (err) {
+                if (err) {
+                  console.log(err);
+                }
+              });
             });
           });
         });
@@ -602,6 +613,7 @@ router.get('/love', function (req, res) {
     res.redirect('/');
   });
 });
+
 // 转发
 router.get('/forward', function (req, res) {
   var data = req.query,
@@ -724,5 +736,119 @@ router.get('/dynamic', function(req, res) {
     });
   });
 });
+
+// 收藏
+router.post('/collection', function (req, res) {
+  var time = Tool.getTime(),
+      info = '<span class="forward-span">收藏自:' + req.body.user + '</span>' + req.body.info;
+  var newCollection = new Collection({
+    user: req.session.user.name,
+    userId: req.session.user._id,
+    fromUser: req.body.user,
+    time: time.day,
+    info: info,
+    path: req.body.path,
+    head: req.session.user.path
+  });
+  newCollection.save(function (err) {
+    if (err) {
+      console.log(err);
+    }
+    req.flash('success', '收藏成功!');
+    res.redirect('/collection');
+  });
+});
+
+// get collection page
+router.get('/collection', function(req, res) {
+  //通过Id找到该用户的信息
+  User.findOne({
+    name: req.session.user.name
+  }, function (err, user) {
+    if (err) {
+      console.log(err);
+    }
+    //返回该用户的动态
+    Collection.find({
+      user: user.name
+    }, function (err, img) {
+      if (err) {
+        console.log(err);
+      }
+      //返回该用户的关注
+      Relation.find({
+        userId: user._id
+      }).count().exec(function (err, r) {
+        if (err) {
+          console.log(err);
+        }
+        Relation.findOne({
+          userId: user._id
+        }, function (err, fi) {
+          if (err) {
+            console.log(err);
+          }
+          //返回被关注数
+          Relation.find({
+            followId: user._id
+          }).count().exec(function (err, cd) {
+            if (err) {
+              console.log(err);
+            }
+            Relation.findOne({
+              followId: user._id
+            }, function (err, fid) {
+              if (err) {
+                console.log(err);
+              }
+              Relation.find({
+                userId: user._id
+              }).count().exec(function (err, r) {
+                if (err) {
+                  console.log(err);
+                }
+                User.find(null).sort({
+                  'followed': -1
+                }).limit(3).exec(function (err, rec) {
+                  if (err) {
+                    console.log(err);
+                  }
+                  res.render('collection', {
+                    title: '云图',
+                    user: user,
+                    currentUser: req.session.user,
+                    imgs: img,
+                    follow: r,
+                    followInfo: fi,
+                    followed: cd,
+                    followedInfo: fid,
+                    recommend: rec,
+                    error: req.flash('error').toString(),
+                    success: req.flash('success').toString()
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+  });
+});
+
+// 删除收藏
+router.get('/colDelete', function (req, res) {
+  Collection.remove({
+    user: req.session.user.name,
+    info: req.query.info
+  }, function (err) {
+    if (err) {
+      console.log(err);
+    }
+    req.flash('success', '收藏删除成功!');
+    res.redirect('/collection');
+  });
+});
+
 
 module.exports = router;

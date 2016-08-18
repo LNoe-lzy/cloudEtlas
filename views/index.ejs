@@ -15,7 +15,7 @@
                             <ul>
                                 <li><a href="/u/<%= user._id %>">发布</a><span><%= count %></span> </li>
                                 <li><a href="/follow">关注</a><span><%= relation %></span> </li>
-                                <li><a href="#">收藏</a><span>10</span> </li>
+                                <li><a href="/collection">收藏</a><span><%= collection %></span> </li>
                             </ul>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                                 </a>
                             </div>
                             <div class="module-like">
-                                <a class="module-control">
+                                <a class="module-control" href="/love">
                                     <span class="glyphicon glyphicon-heart"></span>
                                     <span class="module-hide">喜欢</span>
                                 </a>
@@ -89,7 +89,7 @@
                                 <% } %>
                             </div>
                             <div class="module-collect">
-                                <a class="module-control">
+                                <a class="module-control" href="/collection">
                                     <span class="glyphicon glyphicon-floppy-disk"></span>
                                     <span class="module-hide">收藏</span>
                                 </a>

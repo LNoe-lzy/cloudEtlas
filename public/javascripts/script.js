@@ -130,4 +130,36 @@ $(document).ready(function () {
             }
         });
     });
+
+    // 收藏
+    $('.module-collect a').click(function () {
+        var parent = $(this).parent().parent().parent(),
+            user = parent.find('.msg-user').html(),
+            info = parent.find('.msg-info').html(),
+            path = parent.find('.msg-img img').attr('src'),
+            data = {
+                user: user,
+                info: info,
+                path: path
+            };
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '/collection',
+            data: data
+        });
+    });
+
+    // 删除收藏
+    $('.col-del').click(function () {
+        var info = $(this).parent().find('.msg-info').html();
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: '/colDelete',
+            data: {
+                info: info
+            }
+        });
+    })
 });
