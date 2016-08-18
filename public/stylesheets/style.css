@@ -729,3 +729,19 @@ ul li {
   margin-top: .8em;
   float: right;
 }
+
+/* 动态 */
+.page-dynamic {
+  margin: .8em 1em .4em 1em;
+  color: #66757f;
+}
+.dynamic-name {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: rgb(25, 202, 173);
+}
+.dynamic-info {
+  background-color: #E8FAF2;
+  padding: .6em 1em;
+  border-radius: 8px;
+}

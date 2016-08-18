@@ -10,8 +10,9 @@ var UserSchema = new Schema({
     address: String,
     brithday: String,
     path: String,
-    follow: [],    //关注
-    followed: Number   //被关注
+    follow: [],    // 关注
+    followed: Number,   // 被关注数
+    dynamic: []    // 动态
 });
 
 var User = mongoose.model('users', UserSchema);

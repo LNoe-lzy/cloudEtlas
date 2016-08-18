@@ -1,0 +1,219 @@
+<%- include header.ejs %>
+<div class="page">
+    <div class="page-top">
+        <div class="top-top"></div>
+        <div class="top-head">
+            <img src="<%= user.path %>">
+        </div>
+        <div class="top-bottom">
+            <div class="bottom-info">
+                <ul>
+                    <li><a href="/follow">已关注</a><span><%= follow %></span> </li>
+                    <li><a href="/followed">关注者</a><span><%= followed %></span> </li>
+                </ul>
+            </div>
+            <% if (currentUser.name === user.name) { %>
+            <a href="#" class="btn btn-default btn-edit" data-toggle="modal" data-target="#userModal">编辑个人资料</a>
+            <% } else { %>
+            <a href="/attention/<%= user._id %>"  class="btn btn-default btn-edit">关注</a>
+            <% } %>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="page-container">
+        <div class="page-left">
+            <div class="user-data">
+                <a href="#" class="data-name"><%= user.name %></a>
+                <div class="data-info">
+                    <ul>
+                        <li><span class="glyphicon glyphicon-map-marker"></span> <%= user.address %></li>
+                        <li><span class="glyphicon glyphicon-calendar"></span> <%= user.brithday%></li>
+                        <li><span class="glyphicon glyphicon-cloud"></span> <%= user.email %></li>
+                    </ul>
+                </div>
+            </div>
+
+            <% if (followInfo) { %>
+            <div class="left-container">
+                <div class="left-attention">
+                    <div class="right-title">
+                        <span>已关注</span> · <a href="/follow">查看全部</a>
+                    </div>
+                </div>
+
+                <div class="attention-info">
+                    <div class="attention-top">
+                        <div class="attention-head">
+                            <a href="/u/<%= followInfo.followId %>"><img src="<%= followInfo.followPath %>"></a>
+                        </div>
+                    </div>
+                    <div class="info-bottom">
+                        <span class="attention-name"><%= followInfo.followName %>
+                            <a href="" class="send-message">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="send-hide">发送消息</span>
+                            </a>
+                        </span>
+                        <div class="attention-msg">
+                            <p>If you're a Node contrib and you're going</p>
+                            <a href="/attentionRemove/<%= followInfo.followId %>" class="btn btn-green">取消关注 </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <% } %>
+
+            <% if (followedInfo) { %>
+            <div class="left-container">
+                <div class="left-attention">
+                    <div class="right-title">
+                        <span>关注者</span> · <a href="/followed">查看全部</a>
+                    </div>
+                </div>
+
+                <div class="attention-info">
+                    <div class="attention-top">
+                        <div class="attention-head">
+                            <a href="/u/<%= followedInfo.userId %>"><img src="<%= followedInfo.userPath %>"></a>
+                        </div>
+                    </div>
+                    <div class="info-bottom">
+                        <span class="attention-name"><%= followedInfo.userName %>
+                            <a href="" class="send-message">
+                                <span class="glyphicon glyphicon-comment"></span>
+                                <span class="send-hide">发送消息</span>
+                            </a>
+                        </span>
+                        <div class="attention-msg">
+                            <p>If you're a Node contrib and you're going</p>
+                            <a class="btn btn-green">正在关注 </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <% } %>
+
+        </div>
+
+        <div class="page-main">
+            <% if (currentUser.name === user.name) { %>
+            <div class="main-text">
+                <form>
+                    <div class="input-group text-group">
+                        <textarea class="form-control" rows="2" placeholder="在云图,写下自己想说的!"></textarea>
+                    </div>
+                    <div class="form-left">
+                        <div class="form-image">
+                            <input type="file" class="form-input">
+                            <span class="glyphicon glyphicon-picture form-icon"></span>
+                        </div>
+                        <div class="form-video">
+                            <input type="file" class="form-input">
+                            <span class="glyphicon glyphicon-facetime-video form-icon"></span>
+                        </div>
+                    </div>
+                    <div class="form-right">
+                        <button type="submit" class="btn btn-green">
+                            <span class="glyphicon glyphicon-send"></span>
+                            发布
+                        </button>
+                    </div>
+                    <div class="clear"></div>
+                </form>
+            </div>
+            <% } %>
+            <div class="page-msg">
+                <% user.dynamic.forEach(function (d) { %>
+                <div class="page-dynamic">
+                    <span class="dynamic-name"><%= d.dynamicUser %></span> 评论:
+                    <div class="dynamic-info">
+                        <%= d.dynamicInfo %>
+                    </div>
+                </div>
+                <% })%>
+            </div>
+        </div>
+        <div class="page-right">
+            <div class="right-container">
+                <div class="right-title">
+                    <span>推荐关注</span> · <a href="#">产看全部</a>
+                </div>
+                <div class="right-rec">
+                    <% recommend.forEach(function (r) {%>
+                    <div class="rec">
+                        <img src="<%= r.path %>">
+                        <a href="/u/<%= r._id %>" class="rec-name"><%= r.name %></a>
+                        <a href="#" class="btn btn-default btn-rec"><span class="glyphicon glyphicon-plus"></span> 关注</a>
+                        <a href="#" class="glyphicon glyphicon-remove"></a>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+            <div class="right-container">
+                <div class="right-title">
+                    <span>热门</span> · <a href="#">产看更多</a>
+                </div>
+                <div class="right-popular">
+                    <ul>
+                        <li><a href="#">#popularTest1</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest2</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest3</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest4</a> <span>1.1w关注</span></li>
+                        <li><a href="#">#popularTest5</a> <span>1.1w关注</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--用户信息编辑-->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <div class="edit-image">
+                    <form method="post" enctype="multipart/form-data" action="/edithead">
+                        <input type="file" class="form-input" id="edit-userhead" name="userhead">
+                        <img src="<%= user.path %>" class="form-icon">
+                        <span class="edit-hide">编辑用户头像</span>
+                        <button class="btn btn-green" id="edit-hide-btn">确定</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/editinfo">
+                    <div class="input-group edit-input-group">
+                        <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-user"></span> </div>
+                        <input type="text" class="form-control search-input" id="exampleInputAmount" placeholder="请在此处编辑用户名" name="name">
+                    </div>
+                    <div class="input-group edit-input-group">
+                        <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-map-marker"></span> </div>
+                        <input type="text" class="form-control search-input" id="exampleInputAmount" placeholder="请在此处编辑居住地" name="address">
+                    </div>
+                    <div class="input-group edit-input-group">
+                        <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-calendar"></span> </div>
+                        <input type="text" class="form-control search-input" id="exampleInputAmount" placeholder="请在此处编辑生日" name="brithday">
+                    </div>
+                    <div class="input-group edit-input-group">
+                        <div class="input-group-addon search-input-group"><span class="glyphicon glyphicon-cloud"></span> </div>
+                        <input type="email" class="form-control search-input" id="exampleInputAmount" placeholder="请在此处编辑邮箱" name="email">
+                    </div>
+                    <div class="form-left"></div>
+                    <div class="form-right">
+                        <button type="submit" class="btn btn-green" id="fileBtn">
+                            <span class="glyphicon glyphicon-edit"></span>
+                            修改
+                        </button>
+                    </div>
+                    <div class="clear"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include footer.ejs %>

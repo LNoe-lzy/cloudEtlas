@@ -484,6 +484,7 @@ router.get('/search', function (req, res) {
     });
   });
 });
+
 //用户关注
 router.get('/attention/:to', function (req, res) {
   var attentionTo = req.params.to;
@@ -533,6 +534,7 @@ router.get('/attention/:to', function (req, res) {
     });
   });
 });
+
 //取消关注
 router.get('/attentionRemove/:to', function (req, res) {
   var attentionTo = req.params.to;
@@ -624,19 +626,102 @@ router.get('/forward', function (req, res) {
 
 // 评论
 router.post('/comment', function (req, res) {
+  var currentUser = req.session.user;
   Image.update({
     user: req.body.user
   }, {
     $push: {'comment': {
-      commentUser: req.session.user.name,
+      commentUser: currentUser.name,
       commentInfo: req.body.text,
-      commentHead: req.session.user.path
+      commentHead: currentUser.path
     }}
   }, function (err) {
     if (err) {
       console.log(err);
     }
-    res.redirect('/');
+    User.update({
+      name: req.body.user
+    }, {
+      $push: {'dynamic': {
+          dynamicUser: currentUser.name,
+          dynamicInfo: req.body.text
+        }
+      }
+    }, function (err) {
+      if (err) {
+        console.log(err);
+      }
+      res.redirect('/');
+    });
+  });
+});
+
+// 动态
+router.get('/dynamic', function(req, res) {
+  //通过Id找到该用户的信息
+  User.findOne({
+    name: req.session.user.name
+  }, function (err, user) {
+    if (err) {
+      console.log(err);
+    }
+    //返回该用户的动态
+    //返回该用户的关注
+    Relation.find({
+      userId: user._id
+    }).count().exec(function (err, r) {
+      if (err) {
+        console.log(err);
+      }
+      Relation.findOne({
+        userId: user._id
+      }, function (err, fi) {
+        if (err) {
+          console.log(err);
+        }
+        //返回被关注数
+        Relation.find({
+          followId: user._id
+        }).count().exec(function (err, cd) {
+          if (err) {
+            console.log(err);
+          }
+          Relation.findOne({
+            followId: user._id
+          }, function (err, fid) {
+            if (err) {
+              console.log(err);
+            }
+            Relation.find({
+              userId: user._id
+            }).count().exec(function (err, r) {
+              if (err) {
+                console.log(err);
+              }
+              User.find(null).sort({
+                'followed': -1
+              }).limit(3).exec(function (err, rec) {
+                if (err) {
+                  console.log(err);
+                }
+                res.render('dynamic', {
+                  title: '云图',
+                  user: user,
+                  currentUser: req.session.user,
+                  follow: r,
+                  followInfo: fi,
+                  followed: cd,
+                  followedInfo: fid,
+                  recommend: rec,
+                  error: req.flash('error').toString(),
+                  success: req.flash('success').toString()
+                });
+              });
+            });
+          });
+        });
+      });
+    });
   });
 });
 
