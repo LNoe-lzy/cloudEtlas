@@ -71,44 +71,53 @@ router.get('/', function(req, res) {
               if (err) {
                 console.log(err);
               }
-              // 将用户关注的用户与用户的数据通过数组返回渲染
-              var imgAsync = function (callback) {
-                async.mapSeries(user.follow, function (elem, callback) {
-                  Image.find({
-                    user: elem
-                  }, function (err, fImg) {
-                    if (err) {
-                      return callback(err);
-                    }
-                    fImg.forEach(function (e) {
-                      imgArray.push(e);
-                    });
-                    callback(null);
-                  });
-                }, function (err) {
-                  if (err) {
-                    console.log(err);
-                  }
-                  img.forEach(function (e) {
-                    imgArray.push(e);
-                  });
-                  res.render('index', {
-                    title: '云图',
-                    user: user,
-                    imgs: imgArray.sort(Tool.keysort('_id', true)),
-                    count: c,
-                    collection: col,
-                    relation: r,
-                    recommend: rec,
-                    error: req.flash('error').toString(),
-                    success: req.flash('success').toString()
-                  });
-                });
-              };
-              imgAsync(function (err) {
+              // 喜爱推荐
+              Image.find(null).sort({
+                'love': -1
+              }).limit(3).exec(function (err, l) {
                 if (err) {
                   console.log(err);
                 }
+                // 将用户关注的用户与用户的数据通过数组返回渲染
+                var imgAsync = function (callback) {
+                  async.mapSeries(user.follow, function (elem, callback) {
+                    Image.find({
+                      user: elem
+                    }, function (err, fImg) {
+                      if (err) {
+                        return callback(err);
+                      }
+                      fImg.forEach(function (e) {
+                        imgArray.push(e);
+                      });
+                      callback(null);
+                    });
+                  }, function (err) {
+                    if (err) {
+                      console.log(err);
+                    }
+                    img.forEach(function (e) {
+                      imgArray.push(e);
+                    });
+                    res.render('index', {
+                      title: '云图',
+                      user: user,
+                      imgs: imgArray.sort(Tool.keysort('_id', true)),
+                      count: c,
+                      love: l,
+                      collection: col,
+                      relation: r,
+                      recommend: rec,
+                      error: req.flash('error').toString(),
+                      success: req.flash('success').toString()
+                    });
+                  });
+                };
+                imgAsync(function (err) {
+                  if (err) {
+                    console.log(err);
+                  }
+                });
               });
             });
           });
@@ -172,18 +181,23 @@ router.get('/u/:id', function(req, res) {
                   if (err) {
                     console.log(err);
                   }
-                  res.render('user', {
-                    title: '云图',
-                    user: user,
-                    currentUser: req.session.user,
-                    imgs: img,
-                    follow: r,
-                    followInfo: fi,
-                    followed: cd,
-                    followedInfo: fid,
-                    recommend: rec,
-                    error: req.flash('error').toString(),
-                    success: req.flash('success').toString()
+                  Image.find(null).sort({
+                    'love': -1
+                  }).limit(3).exec(function (err, l) {
+                    res.render('user', {
+                      title: '云图',
+                      user: user,
+                      currentUser: req.session.user,
+                      imgs: img,
+                      follow: r,
+                      followInfo: fi,
+                      followed: cd,
+                      followedInfo: fid,
+                      recommend: rec,
+                      love: l,
+                      error: req.flash('error').toString(),
+                      success: req.flash('success').toString()
+                    });
                   });
                 });
               });
@@ -227,15 +241,20 @@ router.get('/follow', function (req, res){
             if (err) {
               console.log(err);
             }
-            res.render('follow', {
-              title: '云图',
-              user: user,
-              follow: c,
-              followed: cd,
-              followInfo: f,
-              recommend: rec,
-              error: req.flash('error').toString(),
-              success: req.flash('success').toString()
+            Image.find(null).sort({
+              'love': -1
+            }).limit(3).exec(function (err, l) {
+              res.render('follow', {
+                title: '云图',
+                user: user,
+                follow: c,
+                followed: cd,
+                followInfo: f,
+                recommend: rec,
+                love: l,
+                error: req.flash('error').toString(),
+                success: req.flash('success').toString()
+              });
             });
           });
         });
@@ -276,15 +295,20 @@ router.get('/followed', function (req, res){
             if (err) {
               console.log(err);
             }
-            res.render('followed', {
-              title: '云图',
-              user: user,
-              follow: c,
-              followed: cd,
-              followedInfo: f,
-              recommend: rec,
-              error: req.flash('error').toString(),
-              success: req.flash('success').toString()
+            Image.find(null).sort({
+              'love': -1
+            }).limit(3).exec(function (err, l) {
+              res.render('followed', {
+                title: '云图',
+                user: user,
+                follow: c,
+                followed: cd,
+                followedInfo: f,
+                recommend: rec,
+                love: l,
+                error: req.flash('error').toString(),
+                success: req.flash('success').toString()
+              });
             });
           });
         });
@@ -716,17 +740,22 @@ router.get('/dynamic', function(req, res) {
                 if (err) {
                   console.log(err);
                 }
-                res.render('dynamic', {
-                  title: '云图',
-                  user: user,
-                  currentUser: req.session.user,
-                  follow: r,
-                  followInfo: fi,
-                  followed: cd,
-                  followedInfo: fid,
-                  recommend: rec,
-                  error: req.flash('error').toString(),
-                  success: req.flash('success').toString()
+                Image.find(null).sort({
+                  'love': -1
+                }).limit(3).exec(function (err, l) {
+                  res.render('dynamic', {
+                    title: '云图',
+                    user: user,
+                    currentUser: req.session.user,
+                    follow: r,
+                    followInfo: fi,
+                    followed: cd,
+                    followedInfo: fid,
+                    recommend: rec,
+                    love: l,
+                    error: req.flash('error').toString(),
+                    success: req.flash('success').toString()
+                  });
                 });
               });
             });
@@ -745,6 +774,7 @@ router.post('/collection', function (req, res) {
     user: req.session.user.name,
     userId: req.session.user._id,
     fromUser: req.body.user,
+    imgId: req.body.imgId,
     time: time.day,
     info: info,
     path: req.body.path,
@@ -840,7 +870,7 @@ router.get('/collection', function(req, res) {
 router.get('/colDelete', function (req, res) {
   Collection.remove({
     user: req.session.user.name,
-    info: req.query.info
+    imgId: req.query.imgId
   }, function (err) {
     if (err) {
       console.log(err);

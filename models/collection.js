@@ -5,6 +5,7 @@ var CollectionSchema = new Schema({
     user: String,
     userId: String,
     fromUser: String,
+    imgId: String,
     time: String,
     info: String,
     path: String,

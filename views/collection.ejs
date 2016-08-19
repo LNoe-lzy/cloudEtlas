@@ -127,7 +127,7 @@
             <div class="page-msg">
                 <!--渲染数据库-->
                 <% imgs.forEach(function (img, index) {%>
-                <div class="msg">
+                <div class="msg" data-id="<%= img.imgId %>">
                     <div class="msg-head">
                         <img src="<%= user.path %>">
                     </div>

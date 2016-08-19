@@ -137,10 +137,12 @@ $(document).ready(function () {
             user = parent.find('.msg-user').html(),
             info = parent.find('.msg-info').html(),
             path = parent.find('.msg-img img').attr('src'),
+            imgId = parent.attr('data-id'),
             data = {
                 user: user,
                 info: info,
-                path: path
+                path: path,
+                imgId: imgId
             };
         $.ajax({
             type: 'POST',
@@ -152,13 +154,13 @@ $(document).ready(function () {
 
     // 删除收藏
     $('.col-del').click(function () {
-        var info = $(this).parent().find('.msg-info').html();
+        var imgId = $(this).parent().attr('data-id');
         $.ajax({
             type: 'GET',
             dataType: 'json',
             url: '/colDelete',
             data: {
-                info: info
+                imgId: imgId
             }
         });
     })
