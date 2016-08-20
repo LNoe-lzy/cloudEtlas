@@ -11,7 +11,8 @@ var UserSchema = new Schema({
     brithday: String,
     path: String,
     follow: [],    // 关注
-    followed: Number,   // 被关注数
+    followed: [],   // 被关注
+    followedCount: Number,   // 被关注数
     dynamic: []    // 动态
 });
 

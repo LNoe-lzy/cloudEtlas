@@ -36,6 +36,7 @@ router.get('/', function(req, res) {
     if (err) {
       console.log(err);
     }
+    console.log(user);
     //返回用户动态数,并以发布的时间倒叙返回输出
     Image.find({
       user: req.session.user.name
@@ -52,72 +53,63 @@ router.get('/', function(req, res) {
         if (err) {
           console.log('err');
         }
-        //返回用户的关注数
-        Relation.find({
-          userId: user._id
-        }).count().exec(function (err, r) {
+        User.find(null).sort({
+          'followed': -1
+        }).limit(3).exec(function (err, rec) {
           if (err) {
             console.log(err);
           }
-          User.find(null).sort({
-            'followed': -1
-          }).limit(3).exec(function (err, rec) {
+          Collection.find({
+            user: req.session.user.name
+          }).count().exec(function (err, col) {
             if (err) {
               console.log(err);
             }
-            Collection.find({
-              user: req.session.user.name
-            }).count().exec(function (err, col) {
+            // 喜爱推荐
+            Image.find(null).sort({
+              'love': -1
+            }).limit(3).exec(function (err, l) {
               if (err) {
                 console.log(err);
               }
-              // 喜爱推荐
-              Image.find(null).sort({
-                'love': -1
-              }).limit(3).exec(function (err, l) {
-                if (err) {
-                  console.log(err);
-                }
-                // 将用户关注的用户与用户的数据通过数组返回渲染
-                var imgAsync = function (callback) {
-                  async.mapSeries(user.follow, function (elem, callback) {
-                    Image.find({
-                      user: elem
-                    }, function (err, fImg) {
-                      if (err) {
-                        return callback(err);
-                      }
-                      fImg.forEach(function (e) {
-                        imgArray.push(e);
-                      });
-                      callback(null);
-                    });
-                  }, function (err) {
+              // 将用户关注的用户与用户的数据通过数组返回渲染
+              var imgAsync = function (callback) {
+                async.mapSeries(user.follow, function (elem, callback) {
+                  Image.find({
+                    user: elem
+                  }, function (err, fImg) {
                     if (err) {
-                      console.log(err);
+                      return callback(err);
                     }
-                    img.forEach(function (e) {
+                    fImg.forEach(function (e) {
                       imgArray.push(e);
                     });
-                    res.render('index', {
-                      title: '云图',
-                      user: user,
-                      imgs: imgArray.sort(Tool.keysort('_id', true)),
-                      count: c,
-                      love: l,
-                      collection: col,
-                      relation: r,
-                      recommend: rec,
-                      error: req.flash('error').toString(),
-                      success: req.flash('success').toString()
-                    });
+                    callback(null);
                   });
-                };
-                imgAsync(function (err) {
+                }, function (err) {
                   if (err) {
                     console.log(err);
                   }
+                  img.forEach(function (e) {
+                    imgArray.push(e);
+                  });
+                  res.render('index', {
+                    title: '云图',
+                    user: user,
+                    imgs: imgArray.sort(Tool.keysort('_id', true)),
+                    count: c,
+                    love: l,
+                    collection: col,
+                    recommend: rec,
+                    error: req.flash('error').toString(),
+                    success: req.flash('success').toString()
+                  });
                 });
+              };
+              imgAsync(function (err) {
+                if (err) {
+                  console.log(err);
+                }
               });
             });
           });
@@ -143,65 +135,28 @@ router.get('/u/:id', function(req, res) {
       if (err) {
         console.log(err);
       }
-      //返回该用户的关注
-      Relation.find({
-        userId: user._id
-      }).count().exec(function (err, r) {
+      User.find(null).sort({
+        'followed': -1
+      }).limit(3).exec(function (err, rec) {
         if (err) {
           console.log(err);
         }
-        Relation.findOne({
-          userId: user._id
-        }, function (err, fi) {
-          if (err) {
-            console.log(err);
-          }
-          //返回被关注数
-          Relation.find({
-            followId: user._id
-          }).count().exec(function (err, cd) {
-            if (err) {
-              console.log(err);
-            }
-            Relation.findOne({
-              followId: user._id
-            }, function (err, fid) {
-              if (err) {
-                console.log(err);
-              }
-              Relation.find({
-                userId: user._id
-              }).count().exec(function (err, r) {
-                if (err) {
-                  console.log(err);
-                }
-                User.find(null).sort({
-                  'followed': -1
-                }).limit(3).exec(function (err, rec) {
-                  if (err) {
-                    console.log(err);
-                  }
-                  Image.find(null).sort({
-                    'love': -1
-                  }).limit(3).exec(function (err, l) {
-                    res.render('user', {
-                      title: '云图',
-                      user: user,
-                      currentUser: req.session.user,
-                      imgs: img,
-                      follow: r,
-                      followInfo: fi,
-                      followed: cd,
-                      followedInfo: fid,
-                      recommend: rec,
-                      love: l,
-                      error: req.flash('error').toString(),
-                      success: req.flash('success').toString()
-                    });
-                  });
-                });
-              });
-            });
+        Image.find(null).sort({
+          'love': -1
+        }).limit(3).exec(function (err, l) {
+          res.render('user', {
+            title: '云图',
+            user: user,
+            currentUser: req.session.user,
+            imgs: img,
+            follow: user.follow.length,
+            followInfo: user.follow[0],
+            followed: user.followed.length,
+            followedInfo: user.followed[0],
+            recommend: rec,
+            love: l,
+            error: req.flash('error').toString(),
+            success: req.flash('success').toString()
           });
         });
       });
@@ -217,48 +172,26 @@ router.get('/follow', function (req, res){
     if (err) {
       console.log(err);
     }
-    Relation.find({
-      userId: user._id
-    }).count().exec(function (err, c) {
+    User.find(null).sort({
+      'followed': -1
+    }).limit(3).exec(function (err, rec) {
       if (err) {
         console.log(err);
       }
-      Relation.find({
-        userId: user._id
-      }, function (err, f) {
-        if (err) {
-          console.log(err);
-        }
-        Relation.find({
-          followId: user._id
-        }).count().exec(function (err, cd) {
-          if (err) {
-            console.log(err);
-          }
-          User.find(null).sort({
-            'followed': -1
-          }).limit(3).exec(function (err, rec) {
-            if (err) {
-              console.log(err);
-            }
-            Image.find(null).sort({
-              'love': -1
-            }).limit(3).exec(function (err, l) {
-              res.render('follow', {
-                title: '云图',
-                user: user,
-                follow: c,
-                followed: cd,
-                followInfo: f,
-                recommend: rec,
-                love: l,
-                error: req.flash('error').toString(),
-                success: req.flash('success').toString()
-              });
-            });
-          });
+      Image.find(null).sort({
+        'love': -1
+      }).limit(3).exec(function (err, l) {
+        res.render('follow', {
+          title: '云图',
+          user: user,
+          follow: user.follow.length,
+          followed: user.followed.length,
+          recommend: rec,
+          love: l,
+          error: req.flash('error').toString(),
+          success: req.flash('success').toString()
         });
-      })
+      });
     });
   });
 });
@@ -271,48 +204,26 @@ router.get('/followed', function (req, res){
     if (err) {
       console.log(err);
     }
-    Relation.find({
-      userId: user._id
-    }).count().exec(function (err, c) {
+    User.find(null).sort({
+      'followed': -1
+    }).limit(3).exec(function (err, rec) {
       if (err) {
         console.log(err);
       }
-      Relation.find({
-        followId: user._id
-      }, function (err, f) {
-        if (err) {
-          console.log(err);
-        }
-        Relation.find({
-          followId: user._id
-        }).count().exec(function (err, cd) {
-          if (err) {
-            console.log(err);
-          }
-          User.find(null).sort({
-            'followed': -1
-          }).limit(3).exec(function (err, rec) {
-            if (err) {
-              console.log(err);
-            }
-            Image.find(null).sort({
-              'love': -1
-            }).limit(3).exec(function (err, l) {
-              res.render('followed', {
-                title: '云图',
-                user: user,
-                follow: c,
-                followed: cd,
-                followedInfo: f,
-                recommend: rec,
-                love: l,
-                error: req.flash('error').toString(),
-                success: req.flash('success').toString()
-              });
-            });
-          });
+      Image.find(null).sort({
+        'love': -1
+      }).limit(3).exec(function (err, l) {
+        res.render('followed', {
+          title: '云图',
+          user: user,
+          follow: user.follow.length,
+          followed: user.followed.length,
+          recommend: rec,
+          love: l,
+          error: req.flash('error').toString(),
+          success: req.flash('success').toString()
         });
-      })
+      });
     });
   });
 });
@@ -530,33 +441,47 @@ router.get('/attention/:to', function (req, res) {
     if (err) {
       console.log(err);
     }
-    var newRelation = new Relation({
-      userId: currentUser._id,
-      userName: currentUser.name,
-      userPath: currentUser.path,
-      followId: attentionTo,
-      followName: u.name,
-      followPath: u.path
-    });
-    newRelation.save(function (err) {
+    // 更新当前用户的关注信息
+    User.update({
+      _id: currentUser._id
+    }, {
+      $push: {
+        'follow': {
+          userId: currentUser._id,
+          userName: currentUser.name,
+          userPath: currentUser.path,
+          followId: attentionTo,
+          followName: u.name,
+          followPath: u.path
+        }
+      }
+    }, function (err) {
       if (err) {
         console.log(err);
       }
       User.update({
-        name: currentUser.name
+        _id: u._id
       }, {
-        $push: {
-          'follow': u.name
+        $inc: {
+          'followedCount': 1
         }
       }, function (err) {
         if (err) {
           console.log(err);
         }
+        // 更新被关注者的信息
         User.update({
-          name: u.name
+          _id: attentionTo
         }, {
-          $inc: {
-            'followed': 1
+          $push: {
+            'followed': {
+              userId: attentionTo,
+              userName: u.name,
+              userPath: u.path,
+              followedId: currentUser._id,
+              followedName: currentUser.name,
+              followedPath: currentUser.path
+            }
           }
         }, function (err) {
           if (err) {
@@ -580,32 +505,45 @@ router.get('/attentionRemove/:to', function (req, res) {
     if (err) {
       console.log(err);
     }
-    Relation.remove({
-      userId: currentUser._id,
-      userName: currentUser.name,
-      userPath: currentUser.path,
-      followId: attentionTo,
-      followName: u.name,
-      followPath: u.path
+    User.update({
+      _id: currentUser._id
+    }, {
+      $pull: {
+        'follow': {
+          userId: currentUser._id,
+          userName: currentUser.name,
+          userPath: currentUser.path,
+          followId: attentionTo,
+          followName: u.name,
+          followPath: u.path
+        }
+      }
     }, function (err) {
       if (err) {
         console.log(err);
       }
       User.update({
-        name: currentUser.name
+        _id: u._id
       }, {
-        $pull: {
-          'follow': u.name
+        $inc: {
+          'followedCount': -1
         }
       }, function (err) {
         if (err) {
           console.log(err);
         }
         User.update({
-          name: u.name
+          _id: u._id
         }, {
-          $inc: {
-            'followed': -1
+          $pull: {
+            'followed': {
+              userId: attentionTo,
+              userName: u.name,
+              userPath: u.path,
+              followedId: currentUser._id,
+              followedName: currentUser.name,
+              followedPath: currentUser.path
+            }
           }
         }, function (err) {
           if (err) {
@@ -701,65 +639,27 @@ router.get('/dynamic', function(req, res) {
     if (err) {
       console.log(err);
     }
-    //返回该用户的动态
-    //返回该用户的关注
-    Relation.find({
-      userId: user._id
-    }).count().exec(function (err, r) {
+    User.find(null).sort({
+      'followed': -1
+    }).limit(3).exec(function (err, rec) {
       if (err) {
         console.log(err);
       }
-      Relation.findOne({
-        userId: user._id
-      }, function (err, fi) {
-        if (err) {
-          console.log(err);
-        }
-        //返回被关注数
-        Relation.find({
-          followId: user._id
-        }).count().exec(function (err, cd) {
-          if (err) {
-            console.log(err);
-          }
-          Relation.findOne({
-            followId: user._id
-          }, function (err, fid) {
-            if (err) {
-              console.log(err);
-            }
-            Relation.find({
-              userId: user._id
-            }).count().exec(function (err, r) {
-              if (err) {
-                console.log(err);
-              }
-              User.find(null).sort({
-                'followed': -1
-              }).limit(3).exec(function (err, rec) {
-                if (err) {
-                  console.log(err);
-                }
-                Image.find(null).sort({
-                  'love': -1
-                }).limit(3).exec(function (err, l) {
-                  res.render('dynamic', {
-                    title: '云图',
-                    user: user,
-                    currentUser: req.session.user,
-                    follow: r,
-                    followInfo: fi,
-                    followed: cd,
-                    followedInfo: fid,
-                    recommend: rec,
-                    love: l,
-                    error: req.flash('error').toString(),
-                    success: req.flash('success').toString()
-                  });
-                });
-              });
-            });
-          });
+      Image.find(null).sort({
+        'love': -1
+      }).limit(3).exec(function (err, l) {
+        res.render('dynamic', {
+          title: '云图',
+          user: user,
+          currentUser: req.session.user,
+          follow: user.follow.length,
+          followInfo: user.follow[0],
+          followed: user.followed.length,
+          followedInfo: user.followed[0],
+          recommend: rec,
+          love: l,
+          error: req.flash('error').toString(),
+          success: req.flash('success').toString()
         });
       });
     });
@@ -805,61 +705,24 @@ router.get('/collection', function(req, res) {
       if (err) {
         console.log(err);
       }
-      //返回该用户的关注
-      Relation.find({
-        userId: user._id
-      }).count().exec(function (err, r) {
+      User.find(null).sort({
+        'followed': -1
+      }).limit(3).exec(function (err, rec) {
         if (err) {
           console.log(err);
         }
-        Relation.findOne({
-          userId: user._id
-        }, function (err, fi) {
-          if (err) {
-            console.log(err);
-          }
-          //返回被关注数
-          Relation.find({
-            followId: user._id
-          }).count().exec(function (err, cd) {
-            if (err) {
-              console.log(err);
-            }
-            Relation.findOne({
-              followId: user._id
-            }, function (err, fid) {
-              if (err) {
-                console.log(err);
-              }
-              Relation.find({
-                userId: user._id
-              }).count().exec(function (err, r) {
-                if (err) {
-                  console.log(err);
-                }
-                User.find(null).sort({
-                  'followed': -1
-                }).limit(3).exec(function (err, rec) {
-                  if (err) {
-                    console.log(err);
-                  }
-                  res.render('collection', {
-                    title: '云图',
-                    user: user,
-                    currentUser: req.session.user,
-                    imgs: img,
-                    follow: r,
-                    followInfo: fi,
-                    followed: cd,
-                    followedInfo: fid,
-                    recommend: rec,
-                    error: req.flash('error').toString(),
-                    success: req.flash('success').toString()
-                  });
-                });
-              });
-            });
-          });
+        res.render('collection', {
+          title: '云图',
+          user: user,
+          currentUser: req.session.user,
+          imgs: img,
+          follow: user.follow.length,
+          followInfo: user.follow[0],
+          followed: user.followed.length,
+          followedInfo: user.followed[0],
+          recommend: rec,
+          error: req.flash('error').toString(),
+          success: req.flash('success').toString()
         });
       });
     });
