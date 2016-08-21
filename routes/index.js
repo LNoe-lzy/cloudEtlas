@@ -76,7 +76,7 @@ router.get('/', function(req, res) {
               var imgAsync = function (callback) {
                 async.mapSeries(user.follow, function (elem, callback) {
                   Image.find({
-                    user: elem
+                    user: elem.userName
                   }, function (err, fImg) {
                     if (err) {
                       return callback(err);
@@ -144,19 +144,29 @@ router.get('/u/:id', function(req, res) {
         Image.find(null).sort({
           'love': -1
         }).limit(3).exec(function (err, l) {
-          res.render('user', {
-            title: '云图',
-            user: user,
-            currentUser: req.session.user,
-            imgs: img,
-            follow: user.follow.length,
-            followInfo: user.follow[0],
-            followed: user.followed.length,
-            followedInfo: user.followed[0],
-            recommend: rec,
-            love: l,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
+          User.findById(user.follow[0].followId, function (err, followInfo) {
+            if (err) {
+              console.log(err);
+            }
+            User.findById(user.followed[0].followedId, function (err, followedInfo) {
+              if (err) {
+                console.log(err);
+              }
+              res.render('user', {
+                title: '云图',
+                user: user,
+                currentUser: req.session.user,
+                imgs: img,
+                follow: user.follow.length,
+                followInfo: followInfo,
+                followed: user.followed.length,
+                followedInfo: followedInfo,
+                recommend: rec,
+                love: l,
+                error: req.flash('error').toString(),
+                success: req.flash('success').toString()
+              });
+            });
           });
         });
       });
@@ -166,6 +176,7 @@ router.get('/u/:id', function(req, res) {
 
 //get follow page
 router.get('/follow', function (req, res){
+  var followArray = [];
   User.findOne({
     name: req.session.user.name
   }, function (err, user) {
@@ -181,15 +192,39 @@ router.get('/follow', function (req, res){
       Image.find(null).sort({
         'love': -1
       }).limit(3).exec(function (err, l) {
-        res.render('follow', {
-          title: '云图',
-          user: user,
-          follow: user.follow.length,
-          followed: user.followed.length,
-          recommend: rec,
-          love: l,
-          error: req.flash('error').toString(),
-          success: req.flash('success').toString()
+        if (err) {
+          console.log(err);
+        }
+        var followAsync = function (callback) {
+          async.mapSeries(user.follow, function (elem, callback) {
+            User.findById(elem.followId, function (err, u) {
+              if (err) {
+                console.log(err);
+              }
+              followArray.push(u);
+              callback(null);
+            })
+          }, function (err) {
+            if (err) {
+              console.log(err);
+            }
+            res.render('follow', {
+              title: '云图',
+              user: user,
+              follow: user.follow.length,
+              followed: user.followed.length,
+              followInfo: followArray,
+              recommend: rec,
+              love: l,
+              error: req.flash('error').toString(),
+              success: req.flash('success').toString()
+            });
+          });
+        };
+        followAsync(function (err) {
+          if (err) {
+            console.log(err);
+          }
         });
       });
     });
@@ -198,6 +233,7 @@ router.get('/follow', function (req, res){
 
 //被关注
 router.get('/followed', function (req, res){
+  var followedArray = [];
   User.findOne({
     name: req.session.user.name
   }, function (err, user) {
@@ -213,15 +249,39 @@ router.get('/followed', function (req, res){
       Image.find(null).sort({
         'love': -1
       }).limit(3).exec(function (err, l) {
-        res.render('followed', {
-          title: '云图',
-          user: user,
-          follow: user.follow.length,
-          followed: user.followed.length,
-          recommend: rec,
-          love: l,
-          error: req.flash('error').toString(),
-          success: req.flash('success').toString()
+        if (err) {
+          console.log(err);
+        }
+        var followedAsync = function (callback) {
+          async.mapSeries(user.follow, function (elem, callback) {
+            User.findById(elem.followId, function (err, u) {
+              if (err) {
+                console.log(err);
+              }
+              followedArray.push(u);
+              callback(null);
+            })
+          }, function (err) {
+            if (err) {
+              console.log(err);
+            }
+            res.render('followed', {
+              title: '云图',
+              user: user,
+              follow: user.follow.length,
+              followed: user.followed.length,
+              followedInfo: followedArray,
+              recommend: rec,
+              love: l,
+              error: req.flash('error').toString(),
+              success: req.flash('success').toString()
+            });
+          });
+        };
+        followedAsync(function (err) {
+          if (err) {
+            console.log(err);
+          }
         });
       });
     });
@@ -369,29 +429,9 @@ router.post('/editinfo', function (req, res) {
     if (err) {
       console.log(err);
     }
-    //修改关注被关注的用户信息
-    Relation.update({
-      userId: currentUser._id
-    }, {
-      $set: {
-        userName: editData.name
-      }
-    }, function (err) {
-      Relation.update({
-        followId: currentUser._id
-      }, {
-        $set: {
-          followName: editData.name
-        }
-      }, function (err) {
-        if (err) {
-          console.log(err);
-        }
-        req.session.user = null;
-        req.flash('success', '修改信息成功!');
-        res.redirect('/logout');
-      });
-    });
+    req.session.user = null;
+    req.flash('success', '修改信息成功!');
+    res.redirect('/logout');
   });
 });
 
@@ -448,11 +488,7 @@ router.get('/attention/:to', function (req, res) {
       $push: {
         'follow': {
           userId: currentUser._id,
-          userName: currentUser.name,
-          userPath: currentUser.path,
-          followId: attentionTo,
-          followName: u.name,
-          followPath: u.path
+          followId: attentionTo
         }
       }
     }, function (err) {
@@ -476,11 +512,7 @@ router.get('/attention/:to', function (req, res) {
           $push: {
             'followed': {
               userId: attentionTo,
-              userName: u.name,
-              userPath: u.path,
               followedId: currentUser._id,
-              followedName: currentUser.name,
-              followedPath: currentUser.path
             }
           }
         }, function (err) {
@@ -511,11 +543,7 @@ router.get('/attentionRemove/:to', function (req, res) {
       $pull: {
         'follow': {
           userId: currentUser._id,
-          userName: currentUser.name,
-          userPath: currentUser.path,
-          followId: attentionTo,
-          followName: u.name,
-          followPath: u.path
+          followId: attentionTo
         }
       }
     }, function (err) {
@@ -538,11 +566,7 @@ router.get('/attentionRemove/:to', function (req, res) {
           $pull: {
             'followed': {
               userId: attentionTo,
-              userName: u.name,
-              userPath: u.path,
               followedId: currentUser._id,
-              followedName: currentUser.name,
-              followedPath: currentUser.path
             }
           }
         }, function (err) {
@@ -648,18 +672,28 @@ router.get('/dynamic', function(req, res) {
       Image.find(null).sort({
         'love': -1
       }).limit(3).exec(function (err, l) {
-        res.render('dynamic', {
-          title: '云图',
-          user: user,
-          currentUser: req.session.user,
-          follow: user.follow.length,
-          followInfo: user.follow[0],
-          followed: user.followed.length,
-          followedInfo: user.followed[0],
-          recommend: rec,
-          love: l,
-          error: req.flash('error').toString(),
-          success: req.flash('success').toString()
+        User.findById(user.follow[0].followId, function (err, followInfo) {
+          if (err) {
+            console.log(err);
+          }
+          User.findById(user.followed[0].followedId, function (err, followedInfo) {
+            if (err) {
+              console.log(err);
+            }
+            res.render('dynamic', {
+              title: '云图',
+              user: user,
+              currentUser: req.session.user,
+              follow: user.follow.length,
+              followInfo: followInfo,
+              followed: user.followed.length,
+              followedInfo: followedInfo,
+              recommend: rec,
+              love: l,
+              error: req.flash('error').toString(),
+              success: req.flash('success').toString()
+            });
+          });
         });
       });
     });
@@ -711,18 +745,28 @@ router.get('/collection', function(req, res) {
         if (err) {
           console.log(err);
         }
-        res.render('collection', {
-          title: '云图',
-          user: user,
-          currentUser: req.session.user,
-          imgs: img,
-          follow: user.follow.length,
-          followInfo: user.follow[0],
-          followed: user.followed.length,
-          followedInfo: user.followed[0],
-          recommend: rec,
-          error: req.flash('error').toString(),
-          success: req.flash('success').toString()
+        User.findById(user.follow[0].followId, function (err, followInfo) {
+          if (err) {
+            console.log(err);
+          }
+          User.findById(user.followed[0].followedId, function (err, followedInfo) {
+            if (err) {
+              console.log(err);
+            }
+            res.render('collection', {
+              title: '云图',
+              user: user,
+              currentUser: req.session.user,
+              imgs: img,
+              follow: user.follow.length,
+              followInfo: followInfo,
+              followed: user.followed.length,
+              followedInfo: followedInfo,
+              recommend: rec,
+              error: req.flash('error').toString(),
+              success: req.flash('success').toString()
+            });
+          });
         });
       });
     });

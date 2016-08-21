@@ -59,15 +59,15 @@
         </div>
 
         <div class="follow-main">
-            <% user.follow.forEach(function (a) { %>
+            <% followInfo.forEach(function (a) { %>
             <div class="follow-info">
                 <div class="attention-top">
                     <div class="attention-head">
-                        <a href="/u/<%= a.followId %>"><img src="<%= a.followPath %>"></a>
+                        <a href="/u/<%= a._id %>"><img src="<%= a.path %>"></a>
                     </div>
                 </div>
                 <div class="info-bottom">
-                        <span class="attention-name"><%= a.followName %>
+                        <span class="attention-name"><%= a.name %>
                             <a href="" class="send-message">
                                 <span class="glyphicon glyphicon-comment"></span>
                                 <span class="send-hide">发送消息</span>
@@ -75,7 +75,7 @@
                         </span>
                     <div class="attention-msg">
                         <p>If you're a Node contrib and you're going</p>
-                        <a href="/attentionRemove/<%= a.followId %>" class="btn btn-green">取消关注</a>
+                        <a href="/attentionRemove/<%= a._id %>" class="btn btn-green">取消关注</a>
                     </div>
                 </div>
             </div>

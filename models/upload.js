@@ -82,28 +82,8 @@ exports.imgUpload = function (tmp, file_name, mime, user, info, head, id, type, 
             if (err) {
                 console.log(err);
             }
-            //修改关注被关注的用户信息
-            Relaton.update({
-                userName: user
-            }, {
-                $set: {
-                    userPath: imgpath
-                }
-            }, function (err) {
-                Relaton.update({
-                    followName: user
-                }, {
-                    $set: {
-                        followPath: imgpath
-                    }
-                }, function (err) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    req.flash('success', '头像上传成功!');
-                    res.redirect('/');
-                });
-            });
+            req.flash('success', '头像上传成功!');
+            res.redirect('/');
         });
     }
 };

@@ -59,15 +59,15 @@
         </div>
 
         <div class="follow-main">
-            <% user.followed.forEach(function (a) { %>
+            <% followedInfo.forEach(function (a) { %>
             <div class="follow-info">
                 <div class="attention-top">
                     <div class="attention-head">
-                        <a href="/u/<%= a.userId %>"><img src="<%= a.userPath %>"></a>
+                        <a href="/u/<%= a._id %>"><img src="<%= a.path %>"></a>
                     </div>
                 </div>
                 <div class="info-bottom">
-                        <span class="attention-name"><%= a.userName %>
+                        <span class="attention-name"><%= a.name %>
                             <a href="" class="send-message">
                                 <span class="glyphicon glyphicon-comment"></span>
                                 <span class="send-hide">发送消息</span>

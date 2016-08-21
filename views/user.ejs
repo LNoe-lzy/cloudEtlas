@@ -44,11 +44,11 @@
                 <div class="attention-info">
                     <div class="attention-top">
                         <div class="attention-head">
-                            <a href="/u/<%= followInfo.followId %>"><img src="<%= followInfo.followPath %>"></a>
+                            <a href="/u/<%= followInfo._id %>"><img src="<%= followInfo.path %>"></a>
                         </div>
                     </div>
                     <div class="info-bottom">
-                        <span class="attention-name"><%= followInfo.followName %>
+                        <span class="attention-name"><%= followInfo.name %>
                             <a href="" class="send-message">
                                 <span class="glyphicon glyphicon-comment"></span>
                                 <span class="send-hide">发送消息</span>
@@ -56,7 +56,7 @@
                         </span>
                         <div class="attention-msg">
                             <p>If you're a Node contrib and you're going</p>
-                            <a href="/attentionRemove/<%= followInfo.followId %>" class="btn btn-green">取消关注 </a>
+                            <a href="/attentionRemove/<%= followInfo._id %>" class="btn btn-green">取消关注 </a>
                         </div>
                     </div>
                 </div>
@@ -75,11 +75,11 @@
                 <div class="attention-info">
                     <div class="attention-top">
                         <div class="attention-head">
-                            <a href="/u/<%= followedInfo.userId %>"><img src="<%= followedInfo.userPath %>"></a>
+                            <a href="/u/<%= followedInfo._id %>"><img src="<%= followedInfo.path %>"></a>
                         </div>
                     </div>
                     <div class="info-bottom">
-                        <span class="attention-name"><%= followedInfo.userName %>
+                        <span class="attention-name"><%= followedInfo.name %>
                             <a href="" class="send-message">
                                 <span class="glyphicon glyphicon-comment"></span>
                                 <span class="send-hide">发送消息</span>
