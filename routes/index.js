@@ -30,13 +30,10 @@ router.get('/', function(req, res) {
   if (!req.session.user) {
     return res.redirect('/login');
   }
-  User.findOne({
-    name: req.session.user.name
-  }, function (err, user) {
+  User.findById(req.session.user._id, function (err, user) {
     if (err) {
       console.log(err);
     }
-    console.log(user);
     //返回用户动态数,并以发布的时间倒叙返回输出
     Image.find({
       user: req.session.user.name
@@ -122,13 +119,10 @@ router.get('/', function(req, res) {
 //get user page
 router.get('/u/:id', function(req, res) {
   //通过Id找到该用户的信息
-  User.findOne({
-    _id: req.params.id
-  }, function (err, user) {
+  User.findById(req.params.id, function (err, user) {
     if (err) {
       console.log(err);
     }
-    //返回该用户的动态
     Image.find({
       user: user.name
     }, function (err, img) {
@@ -177,9 +171,7 @@ router.get('/u/:id', function(req, res) {
 //get follow page
 router.get('/follow', function (req, res){
   var followArray = [];
-  User.findOne({
-    name: req.session.user.name
-  }, function (err, user) {
+  User.findById(req.session.user._id, function (err, user) {
     if (err) {
       console.log(err);
     }
@@ -234,9 +226,10 @@ router.get('/follow', function (req, res){
 //被关注
 router.get('/followed', function (req, res){
   var followedArray = [];
-  User.findOne({
-    name: req.session.user.name
-  }, function (err, user) {
+  User.findById(req.session.user._id, function (err, user) {
+    if (err) {
+      console.log(err);
+    }
     if (err) {
       console.log(err);
     }
@@ -446,9 +439,7 @@ router.post('/edithead', upload.single('userhead'), function (req, res) {
 
 //用户搜索
 router.get('/search', function (req, res) {
-  User.findOne({
-    name: req.session.user.name
-  }, function (err, user) {
+  User.findById(req.session.user._id, function (err, user) {
     if (err) {
       console.log(err);
     }
@@ -468,16 +459,14 @@ router.get('/search', function (req, res) {
         success: req.flash('success').toString()
       });
     });
-  });
+  })
 });
 
 //用户关注
 router.get('/attention/:to', function (req, res) {
   var attentionTo = req.params.to;
   var currentUser = req.session.user;
-  User.findOne({
-    _id: attentionTo
-  }, function (err, u) {
+  User.findById(attentionTo, function (err, u) {
     if (err) {
       console.log(err);
     }
@@ -512,7 +501,7 @@ router.get('/attention/:to', function (req, res) {
           $push: {
             'followed': {
               userId: attentionTo,
-              followedId: currentUser._id,
+              followedId: currentUser._id
             }
           }
         }, function (err) {
@@ -524,16 +513,14 @@ router.get('/attention/:to', function (req, res) {
         });
       });
     });
-  });
+  })
 });
 
 //取消关注
 router.get('/attentionRemove/:to', function (req, res) {
   var attentionTo = req.params.to;
   var currentUser = req.session.user;
-  User.findOne({
-    _id: attentionTo
-  }, function (err, u) {
+  User.findById(attentionTo, function (err, u) {
     if (err) {
       console.log(err);
     }
@@ -578,7 +565,7 @@ router.get('/attentionRemove/:to', function (req, res) {
         });
       });
     });
-  });
+  })
 });
 
 // 动态喜欢
@@ -657,12 +644,7 @@ router.post('/comment', function (req, res) {
 // 动态
 router.get('/dynamic', function(req, res) {
   //通过Id找到该用户的信息
-  User.findOne({
-    name: req.session.user.name
-  }, function (err, user) {
-    if (err) {
-      console.log(err);
-    }
+  User.findById(req.session.user._id, function (err, user) {
     User.find(null).sort({
       'followed': -1
     }).limit(3).exec(function (err, rec) {
@@ -726,9 +708,7 @@ router.post('/collection', function (req, res) {
 // get collection page
 router.get('/collection', function(req, res) {
   //通过Id找到该用户的信息
-  User.findOne({
-    name: req.session.user.name
-  }, function (err, user) {
+  User.findById(req.session.user._id, function (err, user) {
     if (err) {
       console.log(err);
     }
