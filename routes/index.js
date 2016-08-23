@@ -19,7 +19,6 @@ var imgUpload = require('../models/upload');
  */
 var User = require('../models/user'),
     Image = require('../models/image'),
-    Relation = require('../models/relation'),
     Collection = require('../models/collection'),
     Tool = require('../models/tool');
 
@@ -70,10 +69,10 @@ router.get('/', function(req, res) {
                 console.log(err);
               }
               // 将用户关注的用户与用户的数据通过数组返回渲染
-              var imgAsync = function (callback) {
+              var imgAsync = function () {
                 async.mapSeries(user.follow, function (elem, callback) {
                   Image.find({
-                    user: elem.userName
+                    userId: elem.followId
                   }, function (err, fImg) {
                     if (err) {
                       return callback(err);
@@ -124,7 +123,7 @@ router.get('/u/:id', function(req, res) {
       console.log(err);
     }
     Image.find({
-      user: user.name
+      userId: user._id
     }, function (err, img) {
       if (err) {
         console.log(err);
@@ -187,7 +186,7 @@ router.get('/follow', function (req, res){
         if (err) {
           console.log(err);
         }
-        var followAsync = function (callback) {
+        var followAsync = function () {
           async.mapSeries(user.follow, function (elem, callback) {
             User.findById(elem.followId, function (err, u) {
               if (err) {
@@ -245,7 +244,7 @@ router.get('/followed', function (req, res){
         if (err) {
           console.log(err);
         }
-        var followedAsync = function (callback) {
+        var followedAsync = function () {
           async.mapSeries(user.follow, function (elem, callback) {
             User.findById(elem.followId, function (err, u) {
               if (err) {
@@ -553,7 +552,7 @@ router.get('/attentionRemove/:to', function (req, res) {
           $pull: {
             'followed': {
               userId: attentionTo,
-              followedId: currentUser._id,
+              followedId: currentUser._id
             }
           }
         }, function (err) {
@@ -588,8 +587,8 @@ router.get('/love', function (req, res) {
 });
 
 // 转发
-router.get('/forward', function (req, res) {
-  var data = req.query,
+router.post('/forward', function (req, res) {
+  var data = req.body,
       time = Tool.getTime();
   var forward = '<span class="forward-span">转:' + data.user + '</span>';
   var newImage = new Image({

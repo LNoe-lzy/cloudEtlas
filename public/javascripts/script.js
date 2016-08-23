@@ -109,7 +109,7 @@ $(document).ready(function () {
                 head: head
             };
         $.ajax({
-            type: 'get',
+            type: 'POST',
             dataType: 'json',
             url: '/forward',
             data: data

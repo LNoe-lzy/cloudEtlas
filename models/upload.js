@@ -2,7 +2,6 @@
 var fs = require('fs');
 var Image = require('./image');
 var User = require('./user');
-var Relaton = require('./relation');
 
 exports.imgUpload = function (tmp, file_name, mime, user, info, head, id, type, req, res) {
    //指定存储位置

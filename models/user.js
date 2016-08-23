@@ -1,7 +1,6 @@
 //用户模型
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
+    Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
     name: String,
