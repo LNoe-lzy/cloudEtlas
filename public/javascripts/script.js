@@ -66,6 +66,14 @@ $(document).ready(function () {
                 that.parent().parent().parent().find('.comment-text').fadeIn();
             });
         });
+        $('.btn-comment').click(function () {
+            var commentTo = $(this).parent().find('.comment-user').html();
+            var commentArea = $(this).parent().parent().parent().find('.comment-text');
+            commentArea.attr({
+                'data-commentTo': commentTo
+            });
+            commentArea.fadeIn();
+        });
         $('.comment-close').each(function () {
             var that = $(this);
             that.click(function () {
@@ -119,14 +127,16 @@ $(document).ready(function () {
     // 评论
     $('.comment-btn').click(function () {
         var user = $(this).parent().parent().parent().parent().find('.msg-user').html(),
-            text = $(this).parent().parent().find('.comment-text').val();
+            text = $(this).parent().parent().find('.comment-textArea').val(),
+            commentTo = $(this).parent().parent().parent().attr('data-commentTo') || '';
         $.ajax({
             type: 'POST',
             dataType: 'json',
             url: '/comment',
             data: {
                 user: user,
-                text: text
+                text: text,
+                commentTo: commentTo
             }
         });
     });
@@ -163,5 +173,5 @@ $(document).ready(function () {
                 imgId: imgId
             }
         });
-    })
+    });
 });

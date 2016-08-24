@@ -378,6 +378,7 @@ ul li {
 }
 .comment-info {
   float: left;
+  position: relative;
   line-height: 30px;
   margin-left: .5em;
 }
@@ -425,7 +426,7 @@ ul li {
   background-color: rgb(25, 202, 173);
   border-radius: 5px;
 }
-.comment-text {
+.comment-textArea {
   padding: 2em 1.5em .8em 1.5em;
   width: 100%;
   border-bottom: 1px solid #e1e8ed;
@@ -744,4 +745,11 @@ ul li {
   background-color: #E8FAF2;
   padding: .6em 1em;
   border-radius: 8px;
+}
+
+.btn-comment {
+  margin-left: 1em;
+  border-radius: 8px;
+  padding: .3em;
+  /*display: none;*/
 }

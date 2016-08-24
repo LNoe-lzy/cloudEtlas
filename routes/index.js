@@ -617,7 +617,8 @@ router.post('/comment', function (req, res) {
     $push: {'comment': {
       commentUser: currentUser.name,
       commentInfo: req.body.text,
-      commentHead: currentUser.path
+      commentHead: currentUser.path,
+      commentTo: req.body.commentTo
     }}
   }, function (err) {
     if (err) {
