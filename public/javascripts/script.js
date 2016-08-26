@@ -4,13 +4,14 @@ $(document).ready(function () {
         $('.msg-con').click(function () {
             var that = $(this);
             //获取传到弹出框的当前点击元素的各值
-            var text = that.find('p').html();
-            var imgSrc = that.find('div').find('img').attr('src');
-            var currentParent = that.parent();
-            var userName = currentParent.find('.msg-user').html();
-            var createTime = currentParent.find('.msg-time').html();
-            var userHead = currentParent.parent().find('.msg-head img').attr('src');
-            var imgModal = $('#imgModal');
+            var text = that.find('p').html(),
+                imgSrc = that.find('div').find('img').attr('src'),
+                currentParent = that.parent(),
+                userName = currentParent.find('.msg-user').html(),
+                createTime = currentParent.find('.msg-time').html(),
+                userHead = currentParent.parent().find('.msg-head img').attr('src'),
+                imgModal = $('#imgModal');
+
             imgModal.find('.modal-userhead img').attr({
                 'src': userHead
             });
@@ -57,20 +58,18 @@ $(document).ready(function () {
     //隐藏评论区
     $(function () {
         $('.module-comment').click(function () {
-            var that = $(this);
-            that.parent().parent().parent().find('.comment-text').fadeIn();
+            $(this).parent().parent().parent().find('.comment-text').fadeIn();
         });
         $('.btn-comment').click(function () {
-            var commentTo = $(this).parent().find('.comment-user').html();
-            var commentArea = $(this).parent().parent().parent().find('.comment-text');
+            var commentTo = $(this).parent().find('.comment-user').html(),
+                commentArea = $(this).parent().parent().parent().find('.comment-text');
             commentArea.attr({
                 'data-commentTo': commentTo
             });
             commentArea.fadeIn();
         });
         $('.comment-close').click(function () {
-            var that = $(this);
-            that.parent().fadeOut();
+            $(this).parent().fadeOut();
         });
     });
     //用户头像上传

@@ -1,13 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var crypto = require('crypto');
-var formidable = require('formidable');
-var fs = require('fs');
-var multer = require('multer');
-var upload = multer({dest: 'public/images/tmp/'});
-var async = require('async');
-
-var imgUpload = require('../models/upload');
+var express = require('express'),
+    router = express.Router(),
+    crypto = require('crypto'),
+    formidable = require('formidable'),
+    fs = require('fs'),
+    multer = require('multer'),
+    upload = multer({dest: 'public/images/tmp/'}),
+    async = require('async');
 
 /*
    引入模型
@@ -16,26 +14,29 @@ var imgUpload = require('../models/upload');
    Relation 关系模型
    Collection 收藏模型
    Tool 工具模块
+   upload 文件上传模块
  */
 var User = require('../models/user'),
     Image = require('../models/image'),
     Collection = require('../models/collection'),
-    Tool = require('../models/tool');
+    Tool = require('../models/tool'),
+    imgUpload = require('../models/upload');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  var imgArray = [];
+  var imgArray = [],
+      currentUser = req.session.user;
   // 如果当前的session无用户存在,曾返回登录界面
-  if (!req.session.user) {
+  if (!currentUser) {
     return res.redirect('/login');
   }
-  User.findById(req.session.user._id, function (err, user) {
+  User.findById(currentUser._id, function (err, user) {
     if (err) {
       console.log(err);
     }
     //返回用户动态数,并以发布的时间倒叙返回输出
     Image.find({
-      user: req.session.user.name
+      user: currentUser.name
     }).sort({
       '_id': -1
     }).exec(function (err, img) {
@@ -44,7 +45,7 @@ router.get('/', function(req, res) {
       }
       //返回用户发布的动态数
       Image.find({
-        user: req.session.user.name
+        user: currentUser.name
       }).count().exec(function (err, c) {
         if (err) {
           console.log('err');
@@ -56,7 +57,7 @@ router.get('/', function(req, res) {
             console.log(err);
           }
           Collection.find({
-            user: req.session.user.name
+            user: currentUser.name
           }).count().exec(function (err, col) {
             if (err) {
               console.log(err);
@@ -401,29 +402,42 @@ router.get('/delete', function (req, res) {
 
 //编辑用户信息
 router.post('/editinfo', function (req, res) {
-  var currentUser = req.session.user;
-  var editData = {
-    name: req.body.name,
-    email: req.body.email,
-    address: req.body.address,
-    brithday: req.body.brithday
-  };
-  User.update({
-    name: currentUser.name
-  }, {
-    $set: {
-      name: editData.name,
-      email: editData.email,
-      address: editData.address,
-      brithday: editData.brithday
-    }
-  }, function (err) {
+  User.findOne({
+    name: req.body.name
+  }, function (err, uflag) {
     if (err) {
       console.log(err);
     }
-    req.session.user = null;
-    req.flash('success', '修改信息成功!');
-    res.redirect('/logout');
+    // 判断用户名是否存在
+    if (uflag) {
+      req.flash('error', '用户名已存在!');
+      res.redirect('/u/' + req.session.user._id);
+    } else {
+      var currentUser = req.session.user;
+      var editData = {
+        name: req.body.name,
+        email: req.body.email,
+        address: req.body.address,
+        brithday: req.body.brithday
+      };
+      User.update({
+        name: currentUser.name
+      }, {
+        $set: {
+          name: editData.name,
+          email: editData.email,
+          address: editData.address,
+          brithday: editData.brithday
+        }
+      }, function (err) {
+        if (err) {
+          console.log(err);
+        }
+        req.session.user = null;
+        req.flash('success', '修改信息成功!');
+        res.redirect('/logout');
+      });
+    }
   });
 });
 
