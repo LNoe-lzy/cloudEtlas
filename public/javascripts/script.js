@@ -1,4 +1,38 @@
 $(document).ready(function () {
+    // 图像预加载
+    $(function () {
+        $('.img-dom').each(function () {
+            var that = $(this),
+                path = that.attr('data-img');
+            var myImage = (function () {
+                var imgNode = $('<img>');
+                imgNode.appendTo(that);
+                return {
+                    setSrc: function (src) {
+                        imgNode.attr({
+                            src: src
+                        });
+                    }
+                }
+            })();
+
+            var proxyImage = (function () {
+                var img = new Image;
+                img.onload = function () {
+                    myImage.setSrc(this.src);
+                };
+                return {
+                    setSrc: function (src) {
+                        myImage.setSrc('./images/loading.gif');
+                        img.src = src;
+                    }
+                }
+            })();
+
+            proxyImage.setSrc(path);
+        });
+    });
+
     //图片展示
     $(function() {
         $('.msg-con').click(function () {
