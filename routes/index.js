@@ -747,18 +747,26 @@ router.get('/collection', function(req, res) {
             if (err) {
               console.log(err);
             }
-            res.render('collection', {
-              title: '云图',
-              user: user,
-              currentUser: req.session.user,
-              imgs: img,
-              follow: user.follow.length,
-              followInfo: followInfo,
-              followed: user.followed.length,
-              followedInfo: followedInfo,
-              recommend: rec,
-              error: req.flash('error').toString(),
-              success: req.flash('success').toString()
+            Image.find(null).sort({
+              'love': -1
+            }).limit(3).exec(function (err, l) {
+              if (err) {
+                console.log(err);
+              }
+              res.render('collection', {
+                title: '云图',
+                user: user,
+                currentUser: req.session.user,
+                imgs: img,
+                follow: user.follow.length,
+                followInfo: followInfo,
+                followed: user.followed.length,
+                followedInfo: followedInfo,
+                recommend: rec,
+                love: l,
+                error: req.flash('error').toString(),
+                success: req.flash('success').toString()
+              });
             });
           });
         });

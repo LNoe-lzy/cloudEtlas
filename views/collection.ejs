@@ -169,15 +169,13 @@
             </div>
             <div class="right-container">
                 <div class="right-title">
-                    <span>热门</span> · <a href="#">产看更多</a>
+                    <span>热门</span> · <a href="#">查看更多</a>
                 </div>
                 <div class="right-popular">
                     <ul>
-                        <li><a href="#">#popularTest1</a> <span>1.1w关注</span></li>
-                        <li><a href="#">#popularTest2</a> <span>1.1w关注</span></li>
-                        <li><a href="#">#popularTest3</a> <span>1.1w关注</span></li>
-                        <li><a href="#">#popularTest4</a> <span>1.1w关注</span></li>
-                        <li><a href="#">#popularTest5</a> <span>1.1w关注</span></li>
+                        <% love.forEach(function (l) { %>
+                        <li><a href="#">#<%= l.user %></a> <span><%= l.love %>喜欢</span></li>
+                        <% }) %>
                     </ul>
                 </div>
             </div>
