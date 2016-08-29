@@ -37,9 +37,21 @@
             <div class="right-search">
                 <form class="form-inline" method="get" action="/search">
                     <div class="form-group has-feedback">
-                        <input type="text" class="form-control" id="search" name="search" placeholder="搜索 云图用户">
-                        <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="search" name="search" placeholder="搜索 云图用户">
+                            <span class="input-group-addon" id="basic-addon2">
+                                <button type="submit"><span class="glyphicon glyphicon-search form-control-feedback"></span></button>
+                            </span>
+                        </div>
                     </div>
+
+                    <div id="search-hide">
+                        <a class="hide-input btn btn-default" id="hide-user" data-type="user">用户</a>
+                        <a class="hide-input btn btn-default" id="hide-img" data-type="img">动态</a>
+                        <a class="hide-input btn btn-green" id="hide-all" data-type="all">全部</a>
+                        <a class="glyphicon glyphicon-remove" id="hide-close"></a>
+                    </div>
+                    <input type="hidden" name="hidden" id="hide-input">
                 </form>
             </div>
             <div class="right-user">

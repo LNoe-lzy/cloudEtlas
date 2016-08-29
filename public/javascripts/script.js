@@ -199,4 +199,24 @@ $(document).ready(function () {
             }
         });
     });
+
+    // 搜索
+    $('#search').focus(function () {
+        $('#search-hide').fadeIn();
+    });
+    $('#hide-close').click(function () {
+        $('#search-hide').fadeOut();
+    });
+    $('#hide-user, #hide-img, #hide-all').click(function () {
+        var that = $(this);
+        that.removeClass('btn-default');
+        that.addClass('btn-green');
+        that.siblings().each(function () {
+            if ($(this).attr('id') !== 'hide-close') {
+                $(this).removeClass('btn-green');
+                $(this).addClass('btn-default');
+            }
+        });
+        $('#hide-input').val(that.attr('data-type'));
+    });
 });

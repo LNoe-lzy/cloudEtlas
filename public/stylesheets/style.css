@@ -41,10 +41,6 @@ ul li {
   color:#23ebad;
 }
 
-.btn {
-  border-radius:25px;
-}
-
 .btn-green {
   background-color:#19caad;
   border:1px solid #1dbf97;
@@ -117,7 +113,6 @@ ul li {
 }
 
 .right-search input {
-  border-radius:20px;
   background-color:#f5f8fa;
 }
 
@@ -765,4 +760,24 @@ ul li {
   border:1px solid #23ebad;
   border-radius:5px;
   color:#23ebad;
+}
+
+.header-right {
+  position: relative;
+}
+
+#search-hide {
+  display: none;
+  background: #E8FAF2;
+  position: absolute;
+  padding: .5em;
+  top: 2.8em;
+  left: 1.5em;
+  border-radius: 5px;
+  border: 1px solid #23ebad;
+}
+#hide-close {
+  cursor: pointer;
+  top: 2px;
+  margin: 0 .5em 0 .5em;
 }

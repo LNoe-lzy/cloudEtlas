@@ -94,6 +94,101 @@
             </div>
             <% }) %>
         </div>
+
+        <div class="page-main">
+            <div class="page-msg">
+                <!--渲染数据库数据-->
+                <% imgs.forEach(function (img) {%>
+                <div class="msg-container">
+                    <div class="msg" data-id="<%= img._id %>">
+                        <div class="msg-head">
+                            <img src="<%= img.head %>">
+                        </div>
+                        <a href="#" class="msg-hide">
+                            <span class="glyphicon glyphicon-eye-close"></span>
+                            <span class="msg-hidet">不感兴趣</span>
+                        </a>
+                        <div class="msg-main">
+                            <a href="/<%= img.userId %>" class="msg-user"><%= img.user %></a>
+                            <span> · </span>
+                            <span class="msg-time"><%= img.time %></span>
+                            <div class="msg-con" data-toggle="modal" data-target="#imgModal">
+                                <p class="msg-info"><%- img.info %></p>
+                                <div class="msg-img img-dom" data-img="<%= img.path %>">
+
+                                </div>
+                            </div>
+                        </div>
+                        <% img.comment.forEach(function (c) { %>
+                        <div class="msg-comment">
+                            <div class="comment-head"><img src="<%= c.commentHead %>"></div>
+                            <div class="comment-info">
+                                <p><span class="comment-user"><%= c.commentUser %></span> 回复 <%= c.commentTo %> : <%= c.commentInfo %></p>
+                            </div>
+                            <a class="btn btn-green btn-comment">回复</a>
+                            <div class="clear"></div>
+                        </div>
+                        <% }) %>
+                        <div class="rec-module">
+                            <div class="module-comment">
+                                <a class="module-control">
+                                    <span class="glyphicon glyphicon-comment"></span>
+                                    <span class="module-hide">评论</span>
+                                </a>
+                            </div>
+                            <div class="module-forward">
+                                <a class="module-control" href="/">
+                                    <span class="glyphicon glyphicon-share-alt"></span>
+                                    <span class="module-hide">转发</span>
+                                </a>
+                            </div>
+                            <div class="module-like">
+                                <a class="module-control" href="/love">
+                                    <span class="glyphicon glyphicon-heart"></span>
+                                    <span class="module-hide">喜欢</span>
+                                </a>
+                                <% if (img.love !== 0) { %>
+                                <span class="love-span"><%= img.love %></span>
+                                <% } %>
+                            </div>
+                            <div class="module-collect">
+                                <a class="module-control" href="/collection">
+                                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                                    <span class="module-hide">收藏</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="comment-text">
+                        <span class="comment-close glyphicon glyphicon-remove"></span>
+                        <form action="/comment" method="post">
+                            <div class="input-group text-group">
+                                <textarea class="form-control comment-textArea" rows="2" placeholder="在云图,写下自己想说的!"></textarea>
+                            </div>
+                            <div class="form-left">
+                                <div class="form-image">
+                                    <input type="file" class="form-input">
+                                    <span class="glyphicon glyphicon-picture form-icon"></span>
+                                </div>
+                                <div class="form-video">
+                                    <input type="file" class="form-input">
+                                    <span class="glyphicon glyphicon-facetime-video form-icon"></span>
+                                </div>
+                            </div>
+                            <div class="form-right">
+                                <button type="submit" class="btn btn-green comment-btn">
+                                    <span class="glyphicon glyphicon-send"></span>
+                                    回复
+                                </button>
+                            </div>
+                            <div class="clear"></div>
+                        </form>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        </div>
     </div>
 </div>
 <%- include footer.ejs %>

@@ -452,27 +452,70 @@ router.post('/edithead', upload.single('userhead'), function (req, res) {
 
 //用户搜索
 router.get('/search', function (req, res) {
+  var type = req.query.hidden;
   User.findById(req.session.user._id, function (err, user) {
     if (err) {
       console.log(err);
     }
     var keyword = req.query.search;
     var pattern = new RegExp("^.*" + keyword + ".*$", "i");
-    User.find({
-      name: pattern
-    }, function (err, u) {
-      if (err) {
-        console.log(err);
-      }
-      res.render('search', {
-        title: '搜索结果',
-        searchs: u,
-        user: user,
-        error: req.flash('error').toString(),
-        success: req.flash('success').toString()
+    if (type === 'user') {
+      User.find({
+        name: pattern
+      }, function (err, u) {
+        if (err) {
+          console.log(err);
+        }
+        res.render('search', {
+          title: '搜索结果',
+          searchs: u,
+          user: user,
+          imgs: [],
+          error: req.flash('error').toString(),
+          success: req.flash('success').toString()
+        });
       });
-    });
-  })
+    } else if (type === 'img') {
+      Image.find({
+        info: pattern
+      }, function (err, i) {
+        if (err) {
+          console.log(err);
+        }
+        res.render('search', {
+          title: '搜索结果',
+          searchs: u,
+          user: [],
+          imgs: i,
+          error: req.flash('error').toString(),
+          success: req.flash('success').toString()
+        });
+      });
+    } else {
+      User.find({
+        name: pattern
+      }, function (err, u) {
+        if (err) {
+          console.log(err);
+        }
+        Image.find({
+          info: pattern
+        }, function (err, i) {
+          if (err) {
+            console.log(err);
+          }
+          res.render('search', {
+            title: '搜索结果',
+            searchs: u,
+            user: user,
+            imgs: i,
+            error: req.flash('error').toString(),
+            success: req.flash('success').toString()
+          });
+        });
+      });
+    }
+  });
 });
 
 //用户关注
