@@ -138,11 +138,16 @@ router.get('/u/:id', function(req, res) {
         Image.find(null).sort({
           'love': -1
         }).limit(3).exec(function (err, l) {
-          User.findById(user.follow[0].followId, function (err, followInfo) {
+          if (err) {
+            console.log(err);
+          }
+          var followUserId = (user.follow.length > 0) ? user.follow[0].followId : null,
+              followedUserId = (user.followed.length > 0) ? user.followed[0].followedId : null;
+          User.findById(followUserId, function (err, followInfo) {
             if (err) {
               console.log(err);
             }
-            User.findById(user.followed[0].followedId, function (err, followedInfo) {
+            User.findById(followedUserId, function (err, followedInfo) {
               if (err) {
                 console.log(err);
               }
@@ -319,7 +324,8 @@ router.post('/signup', function (req, res) {
       var user = new User({
         name: userData.name,
         email: userData.email,
-        password: userData.password
+        password: userData.password,
+        path: 'images/loading.gif'
       });
       user.save(function (err) {
         if (err) {
@@ -711,11 +717,16 @@ router.get('/dynamic', function(req, res) {
       Image.find(null).sort({
         'love': -1
       }).limit(3).exec(function (err, l) {
-        User.findById(user.follow[0].followId, function (err, followInfo) {
+        if (err) {
+          console.log(err);
+        }
+        var followUserId = (user.follow.length > 0) ? user.follow[0].followId : null,
+            followedUserId = (user.followed.length > 0) ? user.followed[0].followedId : null;
+        User.findById(followUserId, function (err, followInfo) {
           if (err) {
             console.log(err);
           }
-          User.findById(user.followed[0].followedId, function (err, followedInfo) {
+          User.findById(followedUserId, function (err, followedInfo) {
             if (err) {
               console.log(err);
             }
@@ -782,11 +793,13 @@ router.get('/collection', function(req, res) {
         if (err) {
           console.log(err);
         }
-        User.findById(user.follow[0].followId, function (err, followInfo) {
+        var followUserId = (user.follow.length > 0) ? user.follow[0].followId : null,
+            followedUserId = (user.followed.length > 0) ? user.followed[0].followedId : null;
+        User.findById(followUserId, function (err, followInfo) {
           if (err) {
             console.log(err);
           }
-          User.findById(user.followed[0].followedId, function (err, followedInfo) {
+          User.findById(followedUserId, function (err, followedInfo) {
             if (err) {
               console.log(err);
             }
